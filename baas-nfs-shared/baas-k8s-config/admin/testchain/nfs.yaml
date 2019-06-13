@@ -1,0 +1,128 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: admintestchainorderer-pv
+  labels:
+    app: admintestchainorderer-pv
+spec:
+  capacity:
+    storage: 50Mi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /home/jonluo/gopath/src/gitee.com/jonluo/baasmanager/baas-nfs-shared/baas-artifacts/admin/testchain
+    server: 192.168.1.45
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ namespace: admintestchainorderer
+ name: admintestchainorderer-pv
+spec:
+ accessModes:
+   - ReadWriteMany
+ resources:
+   requests:
+     storage: 10Mi
+ selector:
+   matchLabels:
+     app: admintestchainorderer-pv
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: admintestchainorderer-pvdata
+  labels:
+    app: admintestchainorderer-pvdata
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /home/jonluo/gopath/src/gitee.com/jonluo/baasmanager/baas-nfs-shared/baas-fabric-data/admin/testchain
+    server: 192.168.1.45
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ namespace: admintestchainorderer
+ name: admintestchainorderer-pvdata
+spec:
+ accessModes:
+   - ReadWriteMany
+ resources:
+   requests:
+     storage: 10Gi
+ selector:
+   matchLabels:
+     app: admintestchainorderer-pvdata
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: admintestchainorg1-pv
+  labels:
+    app: admintestchainorg1-pv
+spec:
+  capacity:
+    storage: 50Mi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /home/jonluo/gopath/src/gitee.com/jonluo/baasmanager/baas-nfs-shared/baas-artifacts/admin/testchain
+    server: 192.168.1.45
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ namespace: admintestchainorg1
+ name: admintestchainorg1-pv
+spec:
+ accessModes:
+   - ReadWriteMany
+ resources:
+   requests:
+     storage: 10Mi
+ selector:
+   matchLabels:
+     app: admintestchainorg1-pv
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: admintestchainorg1-pvdata
+  labels:
+    app: admintestchainorg1-pvdata
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /home/jonluo/gopath/src/gitee.com/jonluo/baasmanager/baas-nfs-shared/baas-fabric-data/admin/testchain
+    server: 192.168.1.45
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ namespace: admintestchainorg1
+ name: admintestchainorg1-pvdata
+spec:
+ accessModes:
+   - ReadWriteMany
+ resources:
+   requests:
+     storage: 10Gi
+ selector:
+   matchLabels:
+     app: admintestchainorg1-pvdata
+

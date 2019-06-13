@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  namespace: {{namespace}}
+  name: ca
+spec:
+  selector:
+    matchLabels:
+      app: hyperledger
+      role: ca
+      org: {{namespace}}
+      name: ca
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hyperledger
+        role: ca
+        org: {{namespace}}
+        name: ca
+    spec:
+     containers:
+       - name: ca
+         image: hyperledger/fabric-ca:1.4.1
+         env:
+         - name: FABRIC_CA_HOME
+           value: "/etc/hyperledger/fabric-ca-server"
+         - name: FABRIC_CA_SERVER_CA_NAME
+           value: "ca.{{namespace}}"
+         - name: FABRIC_CA_SERVER_CA_CERTFILE
+           value: "/etc/hyperledger/fabric-ca-server-config/ca.{{namespace}}-cert.pem"
+         - name: FABRIC_CA_SERVER_CA_KEYFILE
+           value: "/etc/hyperledger/fabric-ca-server-config/{{ca-private-key}}"
+         - name: FABRIC_CA_SERVER_TLS_ENABLED
+           value: "{{tls-enabled}}"
+         - name: FABRIC_CA_SERVER_TLS_CERTFILE
+           value: "/etc/hyperledger/fabric-ca-server-config/ca.{{namespace}}-cert.pem"
+         - name: FABRIC_CA_SERVER_TLS_KEYFILE
+           value: "/etc/hyperledger/fabric-ca-server-config/{{ca-private-key}}"
+         - name: GODEBUG
+           value: "netdns=go"
+         ports:
+          - containerPort: 7054
+         command: ["sh"]
+         args: ["-c", " fabric-ca-server start -b admin:adminpw -d "]
+         volumeMounts:
+          - mountPath: /etc/hyperledger/fabric-ca-server-config
+            name: certificate
+            subPath: crypto-config/peerOrganizations/{{namespace}}/ca/
+     volumes:
+       - name: certificate
+         persistentVolumeClaim:
+            claimName: {{namespace}}-pv
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+   namespace: {{namespace}}
+   name: ca
+spec:
+ selector:
+   app: hyperledger
+   role: ca
+   org: {{namespace}}
+   name: ca
+ type: NodePort
+ ports:
+   - name: endpoint
+     protocol: TCP
+     port: 7054
+     targetPort: 7054
+#     nodePort: 30054

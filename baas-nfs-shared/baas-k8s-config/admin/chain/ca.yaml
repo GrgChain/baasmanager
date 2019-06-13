@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  namespace: adminchainorg1
+  name: ca
+spec:
+  selector:
+    matchLabels:
+      app: hyperledger
+      role: ca
+      org: adminchainorg1
+      name: ca
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hyperledger
+        role: ca
+        org: adminchainorg1
+        name: ca
+    spec:
+     containers:
+       - name: ca
+         image: hyperledger/fabric-ca:1.4.1
+         env:
+         - name: FABRIC_CA_HOME
+           value: "/etc/hyperledger/fabric-ca-server"
+         - name: FABRIC_CA_SERVER_CA_NAME
+           value: "ca.adminchainorg1"
+         - name: FABRIC_CA_SERVER_CA_CERTFILE
+           value: "/etc/hyperledger/fabric-ca-server-config/ca.adminchainorg1-cert.pem"
+         - name: FABRIC_CA_SERVER_CA_KEYFILE
+           value: "/etc/hyperledger/fabric-ca-server-config/0ee2607873a7b09dc254e9e958d7175ea24df7680647d63d902f46132ccdc9f1_sk"
+         - name: FABRIC_CA_SERVER_TLS_ENABLED
+           value: "true"
+         - name: FABRIC_CA_SERVER_TLS_CERTFILE
+           value: "/etc/hyperledger/fabric-ca-server-config/ca.adminchainorg1-cert.pem"
+         - name: FABRIC_CA_SERVER_TLS_KEYFILE
+           value: "/etc/hyperledger/fabric-ca-server-config/0ee2607873a7b09dc254e9e958d7175ea24df7680647d63d902f46132ccdc9f1_sk"
+         - name: GODEBUG
+           value: "netdns=go"
+         ports:
+          - containerPort: 7054
+         command: ["sh"]
+         args: ["-c", " fabric-ca-server start -b admin:adminpw -d "]
+         volumeMounts:
+          - mountPath: /etc/hyperledger/fabric-ca-server-config
+            name: certificate
+            subPath: crypto-config/peerOrganizations/adminchainorg1/ca/
+     volumes:
+       - name: certificate
+         persistentVolumeClaim:
+            claimName: adminchainorg1-pv
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+   namespace: adminchainorg1
+   name: ca
+spec:
+ selector:
+   app: hyperledger
+   role: ca
+   org: adminchainorg1
+   name: ca
+ type: NodePort
+ ports:
+   - name: endpoint
+     protocol: TCP
+     port: 7054
+     targetPort: 7054
+#     nodePort: 30054

@@ -1,0 +1,108 @@
+Profiles:
+  OrdererGenesis:
+    Policies:
+      Readers:
+        Type: ImplicitMeta
+        Rule: ANY Readers
+      Writers:
+        Type: ImplicitMeta
+        Rule: ANY Writers
+      Admins:
+        Type: ImplicitMeta
+        Rule: MAJORITY Admins
+    Capabilities:
+      V1_3: true
+    Orderer:
+      OrdererType: solo
+      Addresses:
+      - orderer0.adminchainorderer:7050
+      BatchTimeout: 2s
+      BatchSize:
+        MaxMessageCount: 500
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+      Kafka:
+        Brokers: []
+      Policies:
+        Readers:
+          Type: ImplicitMeta
+          Rule: ANY Readers
+        Writers:
+          Type: ImplicitMeta
+          Rule: ANY Writers
+        Admins:
+          Type: ImplicitMeta
+          Rule: MAJORITY Admins
+        BlockValidation:
+          Type: ImplicitMeta
+          Rule: ANY Writers
+      Organizations:
+      - Name: Orderer
+        ID: OrdererMSP
+        MSPDir: /home/jonluo/gopath/src/gitee.com/jonluo/baasmanager/baas-nfs-shared/baas-artifacts/admin/chain/crypto-config/ordererOrganizations/adminchainorderer/msp
+        Policies:
+          Readers:
+            Type: Signature
+            Rule: OR('OrdererMSP.member')
+          Writers:
+            Type: Signature
+            Rule: OR('OrdererMSP.member')
+          Admins:
+            Type: Signature
+            Rule: OR('OrdererMSP.admin')
+        AnchorPeers: []
+      Capabilities:
+        V1_1: true
+    Consortiums:
+      SampleConsortium:
+        Organizations:
+        - Name: Org1
+          ID: Org1MSP
+          MSPDir: /home/jonluo/gopath/src/gitee.com/jonluo/baasmanager/baas-nfs-shared/baas-artifacts/admin/chain/crypto-config/peerOrganizations/adminchainorg1/msp
+          Policies:
+            Readers:
+              Type: Signature
+              Rule: OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')
+            Writers:
+              Type: Signature
+              Rule: OR('Org1MSP.admin', 'Org1MSP.client')
+            Admins:
+              Type: Signature
+              Rule: OR('Org1MSP.admin')
+          AnchorPeers:
+          - Host: peer0.adminchainorg1
+            Port: 7051
+  OrgsChannel:
+    Consortium: SampleConsortium
+    Application:
+      Policies:
+        Readers:
+          Type: ImplicitMeta
+          Rule: ANY Readers
+        Writers:
+          Type: ImplicitMeta
+          Rule: ANY Writers
+        Admins:
+          Type: ImplicitMeta
+          Rule: MAJORITY Admins
+      Organizations:
+      - Name: Org1
+        ID: Org1MSP
+        MSPDir: /home/jonluo/gopath/src/gitee.com/jonluo/baasmanager/baas-nfs-shared/baas-artifacts/admin/chain/crypto-config/peerOrganizations/adminchainorg1/msp
+        Policies:
+          Readers:
+            Type: Signature
+            Rule: OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')
+          Writers:
+            Type: Signature
+            Rule: OR('Org1MSP.admin', 'Org1MSP.client')
+          Admins:
+            Type: Signature
+            Rule: OR('Org1MSP.admin')
+        AnchorPeers:
+        - Host: peer0.adminchainorg1
+          Port: 7051
+      Capabilities:
+        V1_3: true
+        V1_2: false
+        V1_1: false

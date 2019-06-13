@@ -1,0 +1,21 @@
+OrdererOrgs:
+- Name: Orderer
+  Domain: admintestchainorderer
+  CA:
+    Country: CN
+    Province: GuangDong
+    Locality: GuangZhou
+  Template:
+    Count: 1
+PeerOrgs:
+- Name: Org1
+  Domain: admintestchainorg1
+  CA:
+    Country: CN
+    Province: GuangDong
+    Locality: GuangZhou
+  Template:
+    Count: 1
+  Users:
+    Count: 1
+  EnableNodeOUs: true

@@ -1,0 +1,99 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  namespace: {{namespace}}
+  name: orderer{{index}}-{{namespace}}
+spec:
+  selector:
+    matchLabels:
+        app: hyperledger
+        role: orderer
+        org: {{namespace}}
+        orderer-id: orderer{{index}}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hyperledger
+        role: orderer
+        org: {{namespace}}
+        orderer-id: orderer{{index}}
+    spec:
+      containers:
+      - name: orderer{{index}}-{{namespace}}
+        image: hyperledger/fabric-orderer:1.4.1
+        env:
+        - name: FABRIC_LOGGING_SPEC
+          value: "INFO"
+        - name: ORDERER_GENERAL_LISTENADDRESS
+          value: "0.0.0.0"
+        - name: ORDERER_GENERAL_GENESISMETHOD
+          value: "file"
+        - name: ORDERER_GENERAL_GENESISFILE
+          value: "/var/hyperledger/orderer/orderer.genesis.block"
+        - name: ORDERER_GENERAL_LOCALMSPID
+          value: "{{mspid}}"
+        - name: ORDERER_GENERAL_LOCALMSPDIR
+          value: "/var/hyperledger/orderer/msp"
+        - name: ORDERER_GENERAL_TLS_ENABLED
+          value: "{{tls-enabled}}"
+        - name: ORDERER_GENERAL_TLS_PRIVATEKEY
+          value: "/var/hyperledger/orderer/tls/server.key"
+        - name: ORDERER_GENERAL_TLS_CERTIFICATE
+          value: "/var/hyperledger/orderer/tls/server.crt"
+        - name: ORDERER_GENERAL_TLS_ROOTCAS
+          value: "[/var/hyperledger/orderer/tls/ca.crt]"
+        - name: ORDERER_KAFKA_VERBOSE
+          value: "true"
+        - name: ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY
+          value: "/var/hyperledger/orderer/tls/server.key"
+        - name: ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE
+          value: "/var/hyperledger/orderer/tls/server.crt"
+        - name: ORDERER_GENERAL_CLUSTER_ROOTCAS
+          value: "[/var/hyperledger/orderer/tls/ca.crt]"
+        workingDir: /opt/gopath/src/github.com/hyperledger/fabric
+        ports:
+         - containerPort: 7050
+        command: ["orderer"]
+        volumeMounts:
+         - mountPath: /var/hyperledger/orderer/msp
+           name: certificate
+           subPath: crypto-config/ordererOrganizations/{{namespace}}/orderers/orderer{{index}}.{{namespace}}/msp
+         - mountPath: /var/hyperledger/orderer/tls
+           name: certificate
+           subPath: crypto-config/ordererOrganizations/{{namespace}}/orderers/orderer{{index}}.{{namespace}}/tls
+         - mountPath: /var/hyperledger/orderer/orderer.genesis.block
+           name: certificate
+           subPath: channel-artifacts/genesis.block
+         - mountPath: /var/hyperledger/production/orderer
+           name: ordererdata
+           subPath: orderer{{index}}.{{namespace}}
+      volumes:
+       - name: certificate
+         persistentVolumeClaim:
+             claimName: {{namespace}}-pv
+       - name: ordererdata
+         persistentVolumeClaim:
+             claimName: {{namespace}}-pvdata
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orderer{{index}}
+  namespace: {{namespace}}
+spec:
+ selector:
+   app: hyperledger
+   role: orderer
+   orderer-id: orderer{{index}}
+   org: {{namespace}}
+ type: NodePort
+ ports:
+   - name: endpoint
+     protocol: TCP
+     port: 7050
+     targetPort: 7050
+#     nodePort: 30050
+

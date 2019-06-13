@@ -1,0 +1,128 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: adminchainorderer-pv
+  labels:
+    app: adminchainorderer-pv
+spec:
+  capacity:
+    storage: 50Mi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /home/jonluo/gopath/src/gitee.com/jonluo/baasmanager/baas-nfs-shared/baas-artifacts/admin/chain
+    server: 192.168.1.45
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ namespace: adminchainorderer
+ name: adminchainorderer-pv
+spec:
+ accessModes:
+   - ReadWriteMany
+ resources:
+   requests:
+     storage: 10Mi
+ selector:
+   matchLabels:
+     app: adminchainorderer-pv
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: adminchainorderer-pvdata
+  labels:
+    app: adminchainorderer-pvdata
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /home/jonluo/gopath/src/gitee.com/jonluo/baasmanager/baas-nfs-shared/baas-fabric-data/admin/chain
+    server: 192.168.1.45
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ namespace: adminchainorderer
+ name: adminchainorderer-pvdata
+spec:
+ accessModes:
+   - ReadWriteMany
+ resources:
+   requests:
+     storage: 10Gi
+ selector:
+   matchLabels:
+     app: adminchainorderer-pvdata
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: adminchainorg1-pv
+  labels:
+    app: adminchainorg1-pv
+spec:
+  capacity:
+    storage: 50Mi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /home/jonluo/gopath/src/gitee.com/jonluo/baasmanager/baas-nfs-shared/baas-artifacts/admin/chain
+    server: 192.168.1.45
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ namespace: adminchainorg1
+ name: adminchainorg1-pv
+spec:
+ accessModes:
+   - ReadWriteMany
+ resources:
+   requests:
+     storage: 10Mi
+ selector:
+   matchLabels:
+     app: adminchainorg1-pv
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: adminchainorg1-pvdata
+  labels:
+    app: adminchainorg1-pvdata
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /home/jonluo/gopath/src/gitee.com/jonluo/baasmanager/baas-nfs-shared/baas-fabric-data/admin/chain
+    server: 192.168.1.45
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ namespace: adminchainorg1
+ name: adminchainorg1-pvdata
+spec:
+ accessModes:
+   - ReadWriteMany
+ resources:
+   requests:
+     storage: 10Gi
+ selector:
+   matchLabels:
+     app: adminchainorg1-pvdata
+

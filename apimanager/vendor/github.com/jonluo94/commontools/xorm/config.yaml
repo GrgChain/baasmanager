@@ -1,0 +1,13 @@
+xorm:
+  drivename: mysql
+  ip: 127.0.0.1
+  port: 3306
+  database: test
+  user: root
+  password: 123456
+  #是否显示sql语句
+  showsql: true
+  #连接池中idle态链接最大个数
+  maxidle: 10
+  #连接池最大打开连接数
+  maxopen: 5
