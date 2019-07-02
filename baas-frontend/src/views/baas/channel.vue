@@ -1,11 +1,11 @@
 <template>
   <div class="mixin-components-container">
-    <sticky :z-index="10" class-name="sub-navbar draft">
+    <sticky :z-index="10" class-name="sub-navbar default">
       <el-button v-loading="loading" type="success" @click="exportChain">
         {{ $t('button.export') }}
       </el-button>
     </sticky>
-    <el-row :gutter="20">
+    <el-row :gutter="20" class="channelbody">
       <!-- <div class="app-container documentation-container">
         <a class="document-btn" href="#">区块链</a>
         <a class="document-btn" href="#">高度</a>
@@ -105,7 +105,8 @@ export default {
       orgs: [],
       channels: [],
       loading: false,
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      fullscreenLoading: false
     }
   },
   computed: {
@@ -154,6 +155,11 @@ export default {
       })
     },
     createData() {
+      const loading = this.$loading({
+        lock: true,
+        target: '.channelbody'
+      })
+
       this.dialogFormVisible = false
       this.channel.userAccount = this.account
       this.channel.chainId = this.chainId
@@ -168,6 +174,7 @@ export default {
               duration: 2000
             })
             this.getAllChannel()
+            loading.close()
           })
         }
       })

@@ -13,6 +13,10 @@ func (k K8sService) deployData(datas *models.K8sData) []byte {
 	return util.PostJson(constant.BaasK8sEngine+"/deployData", datas)
 }
 
+func (k K8sService) deleteData(datas *models.K8sData) []byte {
+	return util.PostJson(constant.BaasK8sEngine+"/deleteData", datas)
+}
+
 func (k K8sService) getChainDomain(nss string) []byte {
 	return util.Get(constant.BaasK8sEngine + "/getChainDomain?namesapces=" + nss)
 }

@@ -31,9 +31,24 @@ func (k *K8sService) deployData(ctx *gin.Context) {
 	}
 	que := pro.Bytes2K8sEntities(pro.Yamls2Jsons())
 	engine := engine.NewK8sEngine(que, k.client)
-	engine.DoTasks()
+	engine.DoCreateTasks()
 	models.ResultMsg(ctx, "success")
 }
+
+
+//删除
+func (k *K8sService) deleteData(ctx *gin.Context) {
+	var pro engine.ParseProject
+	if err := ctx.ShouldBindJSON(&pro); err != nil {
+		models.ResultFail(ctx, err)
+		return
+	}
+	que := pro.Bytes2K8sEntities(pro.Yamls2Jsons())
+	engine := engine.NewK8sEngine(que, k.client)
+	engine.DoDeleteTasks()
+	models.ResultMsg(ctx, "success")
+}
+
 
 func (k *K8sService) getChainDomain(ctx *gin.Context) {
 
@@ -79,6 +94,7 @@ func Server() {
 
 	router := gin.Default()
 	router.POST("/deployData", k8sService.deployData)
+	router.POST("/deleteData", k8sService.deleteData)
 	router.GET("/getChainDomain", k8sService.getChainDomain)
 	router.Run(":5991")
 }

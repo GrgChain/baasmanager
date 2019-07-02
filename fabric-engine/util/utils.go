@@ -42,6 +42,17 @@ func CreatedDir(dir string) {
 	}
 }
 
+//移除文件夹
+func RemoveDir(dir string) bool {
+	err := os.RemoveAll(dir)
+	log.Printf("remove dir![%v]\n", dir)
+	if err != nil{
+		log.Printf("remove dir error![%v]\n", err)
+		return false
+	}
+	return true
+}
+
 func Yamls2Bytes(rootPath string, files []string) [][]byte {
 	yamls := make([][]byte, len(files))
 	for i, name := range files {

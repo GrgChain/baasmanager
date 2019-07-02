@@ -101,7 +101,7 @@
           <span style="color: #E74C3C;">MSP:{{ msp }}</span>
           <a class="el-upload__tip" target="_blank" href="https://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html">查看文档</a>
         </el-form-item>
-        <el-form-item :label="$t('chaincode.args')">
+        <el-form-item :label="$t('chaincode.initArgs')">
           <el-tag v-for="tag in argTags" :key="tag" closable :disable-transitions="false" @close="handleClose(tag)">{{ tag }}</el-tag>
           <el-input v-if="inputVisible" ref="saveTagInput" v-model="inputValue" size="small" class="input-new-tag" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm" />
           <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Arg</el-button>

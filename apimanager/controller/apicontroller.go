@@ -186,14 +186,24 @@ func (a *ApiController) UserInfo(ctx *gin.Context) {
 }
 
 func (a *ApiController) UserAuthorize(ctx *gin.Context) {
+    var token string
+    var err error
+	token = ctx.GetHeader("X-Token")
+	if token == "" {
+		token,err = ctx.Cookie("Admin-Token")
+		if err != nil{
+			gintool.ResultFail(ctx, err.Error())
+			ctx.Abort()
+			return
+		}
+	}
 
-	token := ctx.GetHeader("X-Token")
 	session := gintool.GetSession(ctx, token)
 	if nil == session {
 		gintool.ResultFail(ctx, "token不存在")
 		return
 	}
-	_, err := a.userService.CheckToken(token, &entity.User{Id: session.(int)})
+	_, err = a.userService.CheckToken(token, &entity.User{Id: session.(int)})
 
 	if err != nil {
 		if err.Error() == "token已过期" || err.Error() == "token无效" {
@@ -460,14 +470,31 @@ func (a *ApiController) ChainStop(ctx *gin.Context) {
 		gintool.ResultFail(ctx, err)
 		return
 	}
-	chain.Status = 3
-	isSuccess, msg := a.chainService.Update(chain)
+	isSuccess, msg := a.chainService.StopChain(chain)
 	if isSuccess {
 		gintool.ResultMsg(ctx, msg)
 	} else {
 		gintool.ResultFail(ctx, msg)
 	}
 }
+
+func (a *ApiController) ChainRelease(ctx *gin.Context) {
+
+	chain := new(entity.Chain)
+
+	if err := ctx.ShouldBindJSON(chain); err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	isSuccess, msg := a.chainService.ReleaseChain(chain)
+	if isSuccess {
+		gintool.ResultMsg(ctx, msg)
+	} else {
+		gintool.ResultFail(ctx, msg)
+	}
+}
+
+
 
 func (a *ApiController) ChainDownload(ctx *gin.Context) {
 

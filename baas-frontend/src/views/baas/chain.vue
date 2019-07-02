@@ -26,9 +26,9 @@
       </el-table-column>
       <el-table-column :label="$t('chain.name')" min-width="150px">
         <template slot-scope="{row}">
-          <span v-if="row.status==0 || row.status==1">{{ row.name }}</span>
+          <span v-if="row.status==0 || row.status==1 || row.status ==3">{{ row.name }}</span>
           <router-link :to="'/baas/channel/'+row.id">
-            <span v-if="row.status>=2" class="link-type">{{ row.name }}</span>
+            <span v-if="row.status ==2" class="link-type">{{ row.name }}</span>
           </router-link>
         </template>
       </el-table-column>
@@ -91,11 +91,14 @@
           <el-button v-if="row.status==0" size="mini" type="warning" @click="handleBuild(row)">
             {{ $t('button.build') }}
           </el-button>
-          <el-button v-if="row.status==1" size="mini" type="success" @click="handleRun(row)">
+          <el-button v-if="row.status==1 || row.status==3" size="mini" type="success" @click="handleRun(row)">
             {{ $t('button.run') }}
           </el-button>
           <el-button v-if="row.status==2" size="mini" type="info" @click="handleStop(row)">
             {{ $t('button.stop') }}
+          </el-button>
+          <el-button v-if="row.status==3" size="mini" type="danger" @click="handleRelease(row)">
+            {{ $t('button.release') }}
           </el-button>
         </template>
       </el-table-column>
@@ -146,7 +149,7 @@
 </template>
 
 <script>
-import { fetchList, add, update, del, stop, run, build } from '@/api/chain'
+import { fetchList, add, update, del, stop, run, build, release } from '@/api/chain'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { parseTime } from '@/utils'
@@ -402,6 +405,24 @@ export default {
           this.$notify({
             title: '成功',
             message: '停止成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        })
+        .catch(err => { console.error(err) })
+    },
+    handleRelease(row) {
+      this.$confirm('确认释放链资源?', '释放链资源', {
+        confirmButtonText: this.$t('button.confirm'),
+        cancelButtonText: this.$t('button.cancel'),
+        type: 'warning'
+      })
+        .then(async() => {
+          await release(row)
+          this.$notify({
+            title: '成功',
+            message: '释放成功',
             type: 'success',
             duration: 2000
           })

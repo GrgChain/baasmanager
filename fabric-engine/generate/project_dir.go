@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"gitee.com/jonluo/baasmanager/fabric-engine/util"
 	"path/filepath"
+	"fmt"
 )
 
 type ProjectDir struct {
@@ -50,6 +51,19 @@ func (p ProjectDir) BuildProjectDir(chain models.FabricChain) config.UserBaasCon
 	}
 
 	return *config.NewUserBaasConfig(artifactPath, k8sConfig, dataPath, templatePath)
+}
+
+func (p ProjectDir) RemoveProjectDir(chain models.FabricChain) error {
+
+	artifactPath := filepath.Join(constant.BaasArtifactsDir, chain.Account, chain.ChainName)
+	k8sConfig := filepath.Join(constant.BaasK8sFabricConfigDir, chain.Account, chain.ChainName)
+	dataPath := filepath.Join(constant.BaasFabricDataDir, chain.Account, chain.ChainName)
+
+	if util.RemoveDir(artifactPath) && util.RemoveDir(k8sConfig) && util.RemoveDir(dataPath){
+		return nil
+	}
+	return fmt.Errorf("remove project dir error")
+
 }
 
 func NewProjetc() ProjectDir {

@@ -24,6 +24,14 @@ func (g FabricService) DeployK8sData(chain entity.FabricChain) []byte {
 	return httputil.PostJson(config.BaasFabricEngine+"/defK8sYamlAndDeploy", chain)
 }
 
+func (g FabricService) StopChain(chain entity.FabricChain) []byte {
+	return httputil.PostJson(config.BaasFabricEngine+"/stopChain", chain)
+}
+
+func (g FabricService) ReleaseChain(chain entity.FabricChain) []byte {
+	return httputil.PostJson(config.BaasFabricEngine+"/releaseChain", chain)
+}
+
 func (g FabricService) DownloadChainArtifacts(chain entity.FabricChain) []byte {
 	return httputil.PostJson(config.BaasFabricEngine+"/downloadArtifacts", chain)
 }

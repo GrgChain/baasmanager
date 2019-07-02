@@ -128,6 +128,57 @@ func (f FabricService) defK8sYamlAndDeploy(ctx *gin.Context) {
 
 }
 
+func (f FabricService) stopChainInK8s(ctx *gin.Context) {
+	var chain models.FabricChain
+	if err := ctx.ShouldBindJSON(&chain); err != nil {
+		models.ResultFail(ctx, err)
+		return
+	}
+	//获取目录
+	paths := generate.NewProjetc().BuildProjectDir(chain)
+
+	datas := new(models.K8sData)
+	switch chain.Consensus {
+	case constant.OrdererSolo:
+		datas.Data = util.Yamls2Bytes(paths.K8sConfigPath, constant.BaseFiles)
+	case constant.OrdererKafka:
+		datas.Data = util.Yamls2Bytes(paths.K8sConfigPath, append(constant.KafkaFiles, constant.BaseFiles...))
+	}
+
+	//停止k8s
+	res := f.k8s.deleteData(datas)
+
+	var ret models.RespData
+	err := json.Unmarshal(res, &ret)
+	if err != nil {
+		models.ResultFail(ctx, err)
+		return
+	}
+
+	if ret.Code == 0 {
+		models.ResultMsg(ctx, "success")
+	}
+
+}
+
+func (f FabricService) releaseChain(ctx *gin.Context) {
+	var chain models.FabricChain
+	if err := ctx.ShouldBindJSON(&chain); err != nil {
+		models.ResultFail(ctx, err)
+		return
+	}
+	//获取目录
+	err := generate.NewProjetc().RemoveProjectDir(chain)
+	if err != nil {
+		models.ResultFail(ctx, err)
+		return
+	}
+
+	models.ResultMsg(ctx, "success")
+
+}
+
+
 func (f FabricService) buildChaincode(ctx *gin.Context) {
 	var channel models.FabricChannel
 	if err := ctx.ShouldBindJSON(&channel); err != nil {
@@ -352,6 +403,8 @@ func Server() {
 	router.POST("/defChain", fabric.defChain)
 	router.POST("/defChannelAndBuild", fabric.defChannelAndBuild)
 	router.POST("/defK8sYamlAndDeploy", fabric.defK8sYamlAndDeploy)
+	router.POST("/stopChain", fabric.stopChainInK8s)
+	router.POST("/releaseChain", fabric.releaseChain)
 	router.POST("/buildChaincode", fabric.buildChaincode)
 	router.POST("/updateChaincode", fabric.updateChaincode)
 	router.POST("/queryChaincode", fabric.queryChaincode)

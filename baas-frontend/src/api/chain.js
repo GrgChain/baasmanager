@@ -71,6 +71,14 @@ export function stop(data) {
   })
 }
 
+export function release(data) {
+  return request({
+    url: `/chain/release`,
+    method: 'post',
+    data
+  })
+}
+
 export function download(id) {
   const aTag = document.createElement('a')
   aTag.href = process.env.VUE_APP_BASE_API + '/chain/download?chainId=' + id

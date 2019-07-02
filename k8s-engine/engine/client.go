@@ -137,6 +137,15 @@ func (c *Clients) CreateNameSpace(ns *corev1.Namespace) *corev1.Namespace {
 	return nameSpace
 }
 
+func (c *Clients) DeleteNameSpace(ns *corev1.Namespace,ops *metav1.DeleteOptions) error {
+	err := c.KubeClient.CoreV1().Namespaces().Delete(ns.Name, ops)
+	if err != nil {
+		log.Printf(err.Error())
+	}
+	log.Printf("Delete namesapce %q \n", ns.GetObjectMeta().GetName())
+	return err
+}
+
 func (c *Clients) CreatePod(pod *corev1.Pod) *corev1.Pod {
 
 	newPod, err := c.KubeClient.CoreV1().Pods(pod.Namespace).Create(pod)
@@ -147,8 +156,8 @@ func (c *Clients) CreatePod(pod *corev1.Pod) *corev1.Pod {
 	return newPod
 }
 
-func (c *Clients) DeletePod(ns, name string, ops *metav1.DeleteOptions) {
-	err := c.KubeClient.CoreV1().Pods(ns).Delete(name, ops)
+func (c *Clients) DeletePod(pod *corev1.Pod, ops *metav1.DeleteOptions) {
+	err := c.KubeClient.CoreV1().Pods(pod.Namespace).Delete(pod.Name, ops)
 	if err != nil {
 		log.Printf(err.Error())
 	}
@@ -167,17 +176,17 @@ func (c *Clients) CreateDeployment(dep *appsv1.Deployment) *appsv1.Deployment {
 	return newDep
 }
 
-func (c *Clients) GetDeployment(ns string, depName string, ops metav1.GetOptions) *appsv1.Deployment {
-	deploymentsClient := c.KubeClient.AppsV1().Deployments(ns)
-	redep, err := deploymentsClient.Get(depName, ops)
+func (c *Clients) GetDeployment(dep *appsv1.Deployment, ops metav1.GetOptions) *appsv1.Deployment {
+	deploymentsClient := c.KubeClient.AppsV1().Deployments(dep.Namespace)
+	redep, err := deploymentsClient.Get(dep.Name, ops)
 	if err != nil {
 		log.Printf(err.Error())
 	}
 	return redep
 }
 
-func (c *Clients) GetDeploymentList(ns string, ops metav1.ListOptions) *appsv1.DeploymentList {
-	deploymentsClient := c.KubeClient.AppsV1().Deployments(ns)
+func (c *Clients) GetDeploymentList(dep *appsv1.Deployment, ops metav1.ListOptions) *appsv1.DeploymentList {
+	deploymentsClient := c.KubeClient.AppsV1().Deployments(dep.Namespace)
 	list, err := deploymentsClient.List(ops)
 	if err != nil {
 		log.Printf(err.Error())
@@ -188,16 +197,18 @@ func (c *Clients) GetDeploymentList(ns string, ops metav1.ListOptions) *appsv1.D
 	return list
 }
 
-func (c *Clients) DeleteDeployment(ns string, depName string, ops *metav1.DeleteOptions) {
-	deploymentsClient := c.KubeClient.AppsV1().Deployments(ns)
-	err := deploymentsClient.Delete(depName, ops)
+func (c *Clients) DeleteDeployment(dep *appsv1.Deployment, ops *metav1.DeleteOptions) error{
+	deploymentsClient := c.KubeClient.AppsV1().Deployments(dep.Namespace)
+	err := deploymentsClient.Delete(dep.Name, ops)
 	if err != nil {
 		log.Printf(err.Error())
 	}
+	log.Printf("Delete deployment %q \n", dep.Name)
+	return err
 }
 
-func (c *Clients) UpdateDeployment(ns string, depName string, dep *appsv1.Deployment) *appsv1.Deployment {
-	deploymentsClient := c.KubeClient.AppsV1().Deployments(ns)
+func (c *Clients) UpdateDeployment(dep *appsv1.Deployment) *appsv1.Deployment {
+	deploymentsClient := c.KubeClient.AppsV1().Deployments(dep.Namespace)
 
 	newDep, err := deploymentsClient.Update(dep)
 	if err != nil {
@@ -217,6 +228,17 @@ func (c *Clients) CreatePersistentVolume(pv *corev1.PersistentVolume) *corev1.Pe
 	return newpv
 }
 
+func (c *Clients) DeletePersistentVolume(pv *corev1.PersistentVolume,ops *metav1.DeleteOptions) error{
+
+	err := c.KubeClient.CoreV1().PersistentVolumes().Delete(pv.Name,ops)
+	if err != nil {
+		log.Printf(err.Error())
+	}
+	log.Printf("Delete PersistentVolume %q \n", pv.GetObjectMeta().GetName())
+	return err
+}
+
+
 func (c *Clients) CreatePersistentVolumeClaim(pvc *corev1.PersistentVolumeClaim) *corev1.PersistentVolumeClaim {
 	newpvc, err := c.KubeClient.CoreV1().PersistentVolumeClaims(pvc.Namespace).Create(pvc)
 	if err != nil {
@@ -226,6 +248,15 @@ func (c *Clients) CreatePersistentVolumeClaim(pvc *corev1.PersistentVolumeClaim)
 	return newpvc
 }
 
+func (c *Clients) DeletePersistentVolumeClaim(pvc *corev1.PersistentVolumeClaim,ops *metav1.DeleteOptions) error {
+	err := c.KubeClient.CoreV1().PersistentVolumeClaims(pvc.Namespace).Delete(pvc.Name,ops)
+	if err != nil {
+		log.Printf(err.Error())
+	}
+	log.Printf("Delete PersistentVolumeClaim %q \n", pvc.GetObjectMeta().GetName())
+	return err
+}
+
 func (c *Clients) CreateService(service *corev1.Service) *corev1.Service {
 	newservice, err := c.KubeClient.CoreV1().Services(service.Namespace).Create(service)
 	if err != nil {
@@ -233,6 +264,15 @@ func (c *Clients) CreateService(service *corev1.Service) *corev1.Service {
 	}
 	log.Printf("Created Service %q \n", newservice.GetObjectMeta().GetName())
 	return newservice
+}
+
+func (c *Clients) DeleteService(service *corev1.Service,ops *metav1.DeleteOptions) error {
+	err := c.KubeClient.CoreV1().Services(service.Namespace).Delete(service.Name,ops)
+	if err != nil {
+		log.Printf(err.Error())
+	}
+	log.Printf("Delete Service %q \n", service.GetObjectMeta().GetName())
+	return err
 }
 
 func (c *Clients) CreateStatefulSet(sfs *appsv1.StatefulSet) *appsv1.StatefulSet {
@@ -246,6 +286,19 @@ func (c *Clients) CreateStatefulSet(sfs *appsv1.StatefulSet) *appsv1.StatefulSet
 	}
 	log.Printf("Created deployment %q \n", newSfs.GetObjectMeta().GetName())
 	return newSfs
+}
+
+func (c *Clients) DeleteStatefulSet(sfs *appsv1.StatefulSet,ops *metav1.DeleteOptions) error {
+	if sfs.Namespace == "" {
+		sfs.Namespace = corev1.NamespaceDefault
+	}
+	sfsClient := c.KubeClient.AppsV1().StatefulSets(sfs.Namespace)
+	err := sfsClient.Delete(sfs.Name,ops)
+	if err != nil {
+		log.Printf(err.Error())
+	}
+	log.Printf("Created deployment %q \n", sfs.GetObjectMeta().GetName())
+	return err
 }
 
 func (c *Clients) PrintPodLogs(pod corev1.Pod) {

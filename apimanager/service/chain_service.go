@@ -39,6 +39,21 @@ func (l *ChainService) Update(chain *entity.Chain) (bool, string) {
 	return false, "update fail"
 }
 
+func (l *ChainService) UpdateStatus(chain *entity.Chain) (bool, string) {
+
+	sql := "update `chain` set status = ? where id = ?"
+	res, err := l.DbEngine.Exec(sql, chain.Status, chain.Id)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+	r,err := res.RowsAffected()
+	if err == nil && r > 0{
+		return true, "update success"
+	}
+	return false, "update fail"
+}
+
+
 func (l *ChainService) Delete(id int) (bool, string) {
 	i, err := l.DbEngine.Where("id = ?", id).Delete(&entity.Chain{})
 	if err != nil {
@@ -109,7 +124,7 @@ func (l *ChainService) BuildChain(chain *entity.Chain) (bool, string) {
 
 	if ret.Code == 0 {
 		chain.Status = 1
-		return l.Update(chain)
+		return l.UpdateStatus(chain)
 	} else {
 		return false, "build fail"
 	}
@@ -128,7 +143,45 @@ func (l *ChainService) RunChain(chain *entity.Chain) (bool, string) {
 
 	if ret.Code == 0 {
 		chain.Status = 2
-		return l.Update(chain)
+		return l.UpdateStatus(chain)
+	} else {
+		return false, "build fail"
+	}
+
+}
+
+func (l *ChainService) StopChain(chain *entity.Chain) (bool, string) {
+
+	fc := entity.ParseFabircChain(chain)
+	resp := l.FabircService.StopChain(fc)
+	var ret model.RespData
+	err := json.Unmarshal(resp, &ret)
+	if err != nil {
+		return false, "run fail"
+	}
+
+	if ret.Code == 0 {
+		chain.Status = 3
+		return l.UpdateStatus(chain)
+	} else {
+		return false, "build fail"
+	}
+
+}
+
+func (l *ChainService) ReleaseChain(chain *entity.Chain) (bool, string) {
+
+	fc := entity.ParseFabircChain(chain)
+	resp := l.FabircService.ReleaseChain(fc)
+	var ret model.RespData
+	err := json.Unmarshal(resp, &ret)
+	if err != nil {
+		return false, "run fail"
+	}
+
+	if ret.Code == 0 {
+		chain.Status = 0
+		return l.UpdateStatus(chain)
 	} else {
 		return false, "build fail"
 	}

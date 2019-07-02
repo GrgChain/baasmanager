@@ -5,8 +5,19 @@
 ![](https://img.shields.io/badge/docker-v18.06.3&ndash;ce-blue.svg)
 ![](https://img.shields.io/badge/hyperledger&nbsp;fabric-&ge;v1.4.0-blue.svg)
 
-### 基于K8S平台的区块链即服务（Blockchain as a Service）  
-### 主要结构
+### 基于K8S平台的区块链即服务（Blockchain as a Service） 
+### 整体功能
+#### 动态创建fabric
+- [x] solo
+- [x] kafka
+- [ ] etcdraft
+#### 区块链监控
+- [x] 区块链首页统计分析 
+- [ ] 区块链浏览器 
+#### 区块链资源
+- [ ] 动态扩容
+- [x] 释放 
+### 主要目录结构
 * k8s-cluster  
   k8s集群，基于flannel网络，安装dashboard插件，还有其余插件等 (一个简单的k8s集群)
 * baas-nfs-shared  
@@ -21,7 +32,6 @@
   统一api接口管理，调用入口
 * baas-frontend  
   baas admin 前端
-
 ### 架构图
 ![](others/images/baas.png)
 ### 数据流图
@@ -175,14 +185,3 @@
   * 访问 http://ip:8080 
 
 
-### 整体功能
-* 动态创建fabric
-  * solo (完成)
-  * kafka (完成)
-  * etcdraft (待开发)
-* 区块链监控
-  * 区块链首页统计分析 (待开发)
-  * 区块链浏览器 (待开发)
-* 区块链资源
-  * 动态扩容（待开发）
-  * 释放（待开发）
