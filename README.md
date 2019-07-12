@@ -18,47 +18,43 @@
 - [ ] 动态扩容
 - [x] 释放 
 ### 主要目录结构
-* k8s-cluster  
+* baas-kubecluster 
   k8s集群，基于flannel网络，安装dashboard插件，还有其余插件等 (一个简单的k8s集群)
-* baas-nfs-shared  
+* baas-nfsshared  
   其会生成baas-artifacts，baas-fabric-data，baas-k8s-config目录，baas-artifacts为存放生成的证书文件，baas-fabric-data为fabric网络映射出来的数据，baas-k8s-config为生成的k8s yaml定义文件  
 * baas-template  
   fabric k8s的模板文件，用于生成baas-k8s-config下的文件  
-* fabric-engine  
+* baas-fabricengine 
   用于生成 baas-nfs-shared的文件即目录结构和执行fabric操作
-* k8s-engine  
+* baas-kubeengine
   config文件是k8s master的$HOME/.kube/config文件，用于k8s client链接k8s集群，将baas-k8s-config下的在k8s集群创建启动  
-* apimanager  
-  统一api接口管理，调用入口
+* baas-gateway 
+  统一api网关管理，调用入口
 * baas-frontend  
   baas admin 前端
 ### 架构图
-![](others/images/baas.png)
+![](baas-others/images/baas.png)
 ### 数据流图
-![](others/images/flow.png)
+![](baas-others/images/flow.png)
 ### 页面
-![](others/images/das.png)
-![](others/images/user.png)
-![](others/images/role.png)
-![](others/images/chain.png)
-![](others/images/channel.png)
-![](others/images/chaincode.png)
-![](others/images/cc1.png)
-![](others/images/cc2.png)
+![](baas-others/images/das.png)
+![](baas-others/images/user.png)
+![](baas-others/images/role.png)
+![](baas-others/images/chain.png)
+![](baas-others/images/channel.png)
+![](baas-others/images/chaincode.png)
+![](baas-others/images/cc1.png)
+![](baas-others/images/cc2.png)
 ### 部署步骤（简单3台centos虚拟机包含一台nfs，两台k8s集群）
 * 以k8s-cluster搭建k8s集群
-* k8s-master 和 k8s-engine 部署同一台centos
-  * k8s-engine 的参数 kubeconfig 指向 $HOME/.kube/config即可
-* nfs服务器和 fabric-engine 部署同一台centos
+* k8s-master 和 baas-kubeengine 部署同一台centos
+  * 将k8s master的$HOME/.kube/config文件 替换 kubeconfig/config
+  * 修改配置文件 keconfig.yaml  
+* nfs服务器和 baas-fabricengine 部署同一台centos
   * 创建baas根目录
     * 复制 baas-template到其下
-    * 创建nfs共享目录 baas-nfs-shared 
-  * 配置环境变量(相应修改)
-    ```
-    BaasRootPath=baas根目录
-    BaasNfsServer=ip
-    BaasK8sEngine=http://ip:5991
-    ```
+    * 创建nfs共享目录 baas-nfsshared 
+  * 修改配置文件 feconfig.yaml  
   * nfs安装和配置
     * yum -y install nfs-utils rpcbind
     * id (查看当前用户的uid和gid)
@@ -68,18 +64,17 @@
       ```
     * exportfs -r (配置生效)
     * service rpcbind start &&  service nfs start (启动rpcbind、nfs服务)
-  * 启动 fabric-engine 
-* apimanager 随便部署到其中一台centos
+  * 启动 baas-fabricengine 
+* baas-gateway 随便部署到其中一台centos
   * 安装mysql 
     ```
     docker run -p 3306:3306 --name apimysql \
                -e MYSQL_ROOT_PASSWORD=123456 \
                -d mysql:5.7 
     ```
-  * 通过 mysql.sql 初始化 mysql,对应修改config.yaml
-  * 添加环境变量 
-     * BaasFabricEngine=http://ip:4991
-  * 运行 apimanager
+  * 通过 mysql.sql 初始化 mysql,对应修改dbconfig.yaml
+  * 修改配置文件 gwconfig.yaml  
+  * 运行 baas-gateway
 * baas-frontend 随便部署到其中一台centos
   * npm run build:prod 打包
   * 用nginx部署，把打包生成的dist文件夹复制并重命名/usr/share/nginx/baas

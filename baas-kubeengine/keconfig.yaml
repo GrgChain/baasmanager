@@ -1,0 +1,4 @@
+# k8s引擎端口
+BaasKubeEnginePort: 5991
+# k8s集群master config
+BaasKubeMasterConfig: /home/jonluo/gopath/src/github.com/jonluo94/baasmanager/baas-kubeengine/kubeconfig/config
