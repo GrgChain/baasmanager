@@ -1,0 +1,10 @@
+version: '2'
+services:
+  app:
+    build: .
+    working_dir: /go/src/github.com/alexandrevicenzi/unchained
+    command: go test ./...
+    ports:
+     - '6060:6060'
+    volumes:
+     - .:/go/src/github.com/alexandrevicenzi/unchained
