@@ -1,0 +1,6 @@
+# gateway引擎端口
+BaasGatewayPort: 6991
+# fabric引擎地址
+BaasFabricEngine: http://localhost:4991
+# db配置
+BaasGatewayDbconfig: /home/jonluo/gopath/src/github.com/jonluo94/baasmanager/baas-gateway/dbconfig.yaml
