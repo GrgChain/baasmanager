@@ -1,0 +1,19 @@
+# fabric引擎端口
+BaasFabricEnginePort: 4991
+# baas 的根目录
+BaasRootPath: /home/jonluo/gopath/src/github.com/jonluo94/baasmanager
+# nfs server ip
+BaasNfsServer: 192.168.1.33
+# k8s引擎地址
+BaasKubeEngine: http://localhost:5991
+# 在baas根目录下nfs共享目录
+BaasNfsShared: baas-nfsshared
+# 在baas根目录下fabric k8s模板目录
+BaasTemplate: baas-template
+# 保存chaincode的gopath下的src目录
+BaasChaincodeGithub: github.com/baaschaincodes
+# 共识排序参数
+OrdererBatchTimeout: 2s
+OrdererMaxMessageCount: 500
+OrdererAbsoluteMaxBytes: 99 MB
+OrdererPreferredMaxBytes:  512 KB
