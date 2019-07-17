@@ -23,7 +23,7 @@
 * baas-nfsshared  
   其会生成baas-artifacts，baas-fabric-data，baas-k8s-config目录，baas-artifacts为存放生成的证书文件，baas-fabric-data为fabric网络映射出来的数据，baas-k8s-config为生成的k8s yaml定义文件  
 * baas-template  
-  fabric k8s的模板文件，用于生成baas-k8s-config下的文件  
+  fabric k8s的模板文件，用于生成baas-nfsshared/baas-k8s-config下的文件  
 * baas-fabricengine  
   用于生成 baas-nfsshared的文件即目录结构和执行fabric操作
 * baas-kubeengine  
