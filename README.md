@@ -25,9 +25,9 @@
 * baas-template  
   fabric k8s的模板文件，用于生成baas-k8s-config下的文件  
 * baas-fabricengine  
-  用于生成 baas-nfs-shared的文件即目录结构和执行fabric操作
+  用于生成 baas-nfsshared的文件即目录结构和执行fabric操作
 * baas-kubeengine  
-  config文件是k8s master的$HOME/.kube/config文件，用于k8s client链接k8s集群，将baas-k8s-config下的在k8s集群创建启动  
+  kubeconfig/config文件是k8s master的$HOME/.kube/config文件，用于k8s client链接k8s集群，将baas-nfsshared/baas-k8s-config下的文件在k8s集群创建启动  
 * baas-gateway  
   统一api网关管理，调用入口
 * baas-frontend  
