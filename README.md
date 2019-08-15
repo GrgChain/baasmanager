@@ -1,9 +1,10 @@
 # baasmanager
-![](https://img.shields.io/badge/author-jonluo-brightgreen.svg)
+![](https://img.shields.io/badge/build-passing-brightgreen.svg)
+![](https://img.shields.io/badge/author-jonluo-yellow.svg)
 ![](https://img.shields.io/badge/kubernetes-v1.14.1-blue.svg)
 ![](https://img.shields.io/badge/go-v1.12.5-blue.svg)
 ![](https://img.shields.io/badge/docker-v18.06.3&ndash;ce-blue.svg)
-![](https://img.shields.io/badge/hyperledger&nbsp;fabric-&ge;v1.4.0-blue.svg)
+![](https://img.shields.io/badge/hyperledger&nbsp;fabric-&ge;v1.4.1-blue.svg)
 
 ### 基于K8S平台的区块链即服务（Blockchain as a Service） 
 ### 整体功能
