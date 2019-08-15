@@ -14,11 +14,11 @@ import (
 
 	"github.com/hyperledger/fabric/common/flogging"
 	"github.com/hyperledger/fabric/common/policies"
-	"github.com/hyperledger/fabric/common/viperutil"
-	cf "github.com/hyperledger/fabric/core/config"
+	"github.com/jonluo94/baasmanager/baas-core/core/tools/fabric/common/viperutil"
+	cf "github.com/jonluo94/baasmanager/baas-core/core/tools/fabric/core/config"
 	"github.com/hyperledger/fabric/msp"
 	"github.com/hyperledger/fabric/protos/orderer/etcdraft"
-	"github.com/spf13/viper"
+	"github.com/jonluo94/baasmanager/baas-core/core/tools/viper"
 )
 
 const (

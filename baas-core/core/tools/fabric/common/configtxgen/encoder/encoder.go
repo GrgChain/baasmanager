@@ -13,7 +13,7 @@ import (
 	"github.com/hyperledger/fabric/common/flogging"
 	"github.com/hyperledger/fabric/common/genesis"
 	"github.com/hyperledger/fabric/common/policies"
-	genesisconfig "github.com/hyperledger/fabric/common/tools/configtxgen/localconfig"
+	genesisconfig "github.com/jonluo94/baasmanager/baas-core/core/tools/fabric/common/configtxgen/localconfig"
 	"github.com/hyperledger/fabric/common/tools/configtxlator/update"
 	"github.com/hyperledger/fabric/common/util"
 	"github.com/hyperledger/fabric/msp"

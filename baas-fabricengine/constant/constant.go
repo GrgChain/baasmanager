@@ -4,7 +4,7 @@ const (
 	//每条chain的fabric证书文件目录
 	BaasArtifacts = "baas-artifacts"
 	//每条chain的fabric的k8s文件目录
-	BaasK8sConfig = "baas-k8s-kubeconfig"
+	BaasK8sConfig = "baas-k8s-conf																																																																																																																																															ig"
 	//每条chain的fabric的数据目录
 	BaasFabricData = "baas-fabric-data"
 	//系统channel名称
@@ -15,11 +15,11 @@ const (
 
 const (
 	//cryptogen工具生成证书目录
-	CryptoConfigDir = "crypto-kubeconfig"
+	CryptoConfigDir = "crypto-config"
 	//configtxgen工具生成创世区块,channel交易保存的目录
 	ChannelArtifactsDir = "channel-artifacts"
 	//cryptogen配置
-	CryptoConfigYaml = "crypto-feconfig.yaml"
+	CryptoConfigYaml = CryptoConfigDir + ".yaml"
 	//configtxgen配置
 	ConfigtxYaml = "configtx.yaml"
 )

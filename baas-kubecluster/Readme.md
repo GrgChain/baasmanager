@@ -166,7 +166,7 @@
 其余步骤与k8s-master一样
 
 
-##环境准备好后，开始搭建集群
+## 环境准备好后，开始搭建集群
 * 进入 k8s-master (ssh root@192.168.0.224)
   * kubeadm 初始化 master (pod-network-cidr flannel网络用到)
     ```

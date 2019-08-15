@@ -366,7 +366,8 @@ func (f FabricService) uploadChaincode(ctx *gin.Context) {
 	}
 
 	fileutil.CreatedDir(fautil.GetChaincodeLocalGithub(channel))
-	ioutil.WriteFile(fautil.GetChaincodeGithubFile(channel), channel.ChaincodeBytes, os.ModePerm)
+	goccPath := fautil.GetChaincodeGithubFile(channel)
+	ioutil.WriteFile(goccPath, channel.ChaincodeBytes, os.ModePerm)
 
 	gintool.ResultOk(ctx, fautil.GetChaincodeGithub(channel))
 }

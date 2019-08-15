@@ -23,7 +23,7 @@ import (
 	"github.com/hyperledger/fabric/common/flogging"
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
-	"github.com/spf13/viper"
+	"github.com/jonluo94/baasmanager/baas-core/core/tools/viper"
 )
 
 var logger = flogging.MustGetLogger("viperutil")

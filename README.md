@@ -21,7 +21,10 @@
 * baas-kubecluster  
   k8s集群，基于flannel网络，安装dashboard插件，还有其余插件等 (一个简单的k8s集群)
 * baas-nfsshared  
-  其会生成baas-artifacts，baas-fabric-data，baas-k8s-config目录，baas-artifacts为存放生成的证书文件，baas-fabric-data为fabric网络映射出来的数据，baas-k8s-config为生成的k8s yaml定义文件  
+  其会生成baas-artifacts，baas-fabric-data，baas-k8s-config目录  
+  * baas-artifacts为存放生成的证书文件
+  * baas-fabric-data为fabric网络映射出来的数据
+  * baas-k8s-config为生成的k8s yaml定义文件  
 * baas-template  
   fabric k8s的模板文件，用于生成baas-nfsshared/baas-k8s-config下的文件  
 * baas-fabricengine  
@@ -60,7 +63,7 @@
     * id (查看当前用户的uid和gid)
     * vim /etc/exports (添加配置,相应修改)  
       ```
-      /baas根目录/baas-nfs-shared 192.168.1.0/24(rw,sync,insecure,anonuid=当前用户的uid,anongid=当前用户的gid)
+      /baas根目录/baas-nfsshared 192.168.1.0/24(rw,sync,insecure,anonuid=当前用户的uid,anongid=当前用户的gid)
       ```
     * exportfs -r (配置生效)
     * service rpcbind start &&  service nfs start (启动rpcbind、nfs服务)
@@ -78,7 +81,7 @@
 * baas-frontend 随便部署到其中一台centos
   * npm run build:prod 打包
   * 用nginx部署，把打包生成的dist文件夹复制并重命名/usr/share/nginx/baas
-  * 配置nginx.conf反向代理
+  * 配置nginx.conf反向代理(相应修改baas-gateway地址)
     ```
     user www-data;
     worker_processes auto;
@@ -126,7 +129,7 @@
     
         gzip  on;
         gzip_types       text/plain application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png image/jpg;
-        # apimanager地址
+        # baas-gateway地址
         upstream baasapi {
             server 127.0.0.1:6991;
         }

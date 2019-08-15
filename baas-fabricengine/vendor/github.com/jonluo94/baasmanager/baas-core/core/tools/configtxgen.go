@@ -14,9 +14,9 @@ import (
 
 	"github.com/hyperledger/fabric/bccsp/factory"
 	"github.com/hyperledger/fabric/common/channelconfig"
-	"github.com/hyperledger/fabric/common/tools/configtxgen/encoder"
-	genesisconfig "github.com/hyperledger/fabric/common/tools/configtxgen/localconfig"
-	"github.com/hyperledger/fabric/common/tools/configtxgen/metadata"
+	"github.com/jonluo94/baasmanager/baas-core/core/tools/fabric/common/configtxgen/encoder"
+	genesisconfig "github.com/jonluo94/baasmanager/baas-core/core/tools/fabric/common/configtxgen/localconfig"
+	"github.com/jonluo94/baasmanager/baas-core/core/tools/fabric/common/configtxgen/metadata"
 	"github.com/hyperledger/fabric/common/tools/protolator"
 	cb "github.com/hyperledger/fabric/protos/common"
 	pb "github.com/hyperledger/fabric/protos/peer"
