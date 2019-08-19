@@ -114,9 +114,18 @@ type Orderer struct {
 	Kafka struct {
 		Brokers []string `yaml:"Brokers"`
 	} `yaml:"Kafka"`
-
+	EtcdRaft struct {
+		Consenters []Consenter `yaml:"Consenters"`
+	} `yaml:"EtcdRaft"`
 	Organizations string          `yaml:"Organizations"`
 	Policies      OrdererPolicies `yaml:"Policies"`
+}
+
+type Consenter struct {
+	Host string `yaml:"Host"`
+	Port int `yaml:"Port"`
+	ClientTLSCert string `yaml:"ClientTLSCert"`
+	ServerTLSCert string `yaml:"ServerTLSCert"`
 }
 
 type OrdererPolicies struct {
@@ -154,6 +163,9 @@ type OgOrderer struct {
 	Kafka struct {
 		Brokers []string `yaml:"Brokers"`
 	} `yaml:"Kafka"`
+	EtcdRaft struct {
+		Consenters []Consenter `yaml:"Consenters"`
+	} `yaml:"EtcdRaft"`
 	Policies      OrdererPolicies     `yaml:"Policies"`
 	Organizations []Organization      `yaml:"Organizations"`
 	Capabilities  OrdererCapabilities `yaml:"Capabilities"`
@@ -416,7 +428,26 @@ func (f FabricConfig) SetOrderer() FabricConfig {
 		orderer.Addresses = domains
 		orderer.Kafka = kafka
 	case constant.OrdererEtcdraft:
-		logger.Info("no finished")
+		domains := make([]string, f.OrderCount)
+		consenters := make([]Consenter, f.OrderCount)
+		for i := 0; i < f.OrderCount; i++ {
+			domain := "orderer" + strconv.Itoa(i) + "." + f.GetHostDomain(constant.OrdererSuffix)
+			domains[i] = domain + ":7050"
+			tls := f.CryptoConfigDir + "/ordererOrganizations/" + f.GetHostDomain(constant.OrdererSuffix) + "/orderers/" + domain + "/tls/server.crt"
+			consenter := Consenter{
+				Host:domain,
+                Port: 7050,
+                ClientTLSCert:tls,
+                ServerTLSCert:tls,
+			}
+			consenters[i] = consenter
+		}
+		orderer.Addresses = domains
+		orderer.EtcdRaft = struct {
+			Consenters []Consenter `yaml:"Consenters"`
+		}{
+			Consenters:consenters,
+		}
 	}
 	f.configtx.Orderer = orderer
 	return f
@@ -470,6 +501,7 @@ func (f FabricConfig) SetProfiles() FabricConfig {
 		OrdererType:   f.configtx.Orderer.OrdererType,
 		Policies:      f.configtx.Orderer.Policies,
 		Kafka:         f.configtx.Orderer.Kafka,
+		EtcdRaft:      f.configtx.Orderer.EtcdRaft,
 		Addresses:     f.configtx.Orderer.Addresses,
 		BatchSize:     f.configtx.Orderer.BatchSize,
 		BatchTimeout:  f.configtx.Orderer.BatchTimeout,
@@ -517,10 +549,8 @@ func (f FabricConfig) SetOrdererOrgs() FabricConfig {
 	switch f.Consensus {
 	case constant.OrdererSolo:
 		order = NewOrdererOrg(f.GetHostDomain(constant.OrdererSuffix), 1)
-	case constant.OrdererKafka:
+	case constant.OrdererKafka,constant.OrdererEtcdraft:
 		order = NewOrdererOrg(f.GetHostDomain(constant.OrdererSuffix), f.OrderCount)
-	case constant.OrdererEtcdraft:
-		logger.Infof("no finished")
 	}
 	ordererOrgs[0] = order
 	f.cryptoConfig.OrdererOrgs = ordererOrgs

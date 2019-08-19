@@ -63,7 +63,10 @@ func (p ProjectDir) BuildProjectDir(chain model.FabricChain) UserChainPath {
 			fileutil.CreatedDir(filepath.Join(dataPath, kafka))
 		}
 	case constant.OrdererEtcdraft:
-		logger.Info("etcdraft")
+		for i := 0; i < chain.OrderCount; i++ {
+			domain := "orderer" + strconv.Itoa(i) + "." + chain.GetHostDomain(constant.OrdererSuffix)
+			fileutil.CreatedDir(filepath.Join(dataPath, domain))
+		}
 	}
 
 	for _, o := range chain.PeersOrgs {

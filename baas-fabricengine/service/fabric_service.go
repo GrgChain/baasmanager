@@ -112,12 +112,10 @@ func (f FabricService) defK8sYamlAndDeploy(ctx *gin.Context) {
 	datas := new(model.K8sData)
 
 	switch chain.Consensus {
-	case constant.OrdererSolo:
+	case constant.OrdererSolo,constant.OrdererEtcdraft:
 		datas.Data = util.Yamls2Bytes(paths.K8sConfigPath, f.kube.baseFiles)
 	case constant.OrdererKafka:
 		datas.Data = util.Yamls2Bytes(paths.K8sConfigPath, append(f.kube.kafkaFiles, f.kube.baseFiles...))
-	case constant.OrdererEtcdraft:
-		logger.Infof("no finished")
 
 	}
 
@@ -148,12 +146,10 @@ func (f FabricService) stopChainInK8s(ctx *gin.Context) {
 
 	datas := new(model.K8sData)
 	switch chain.Consensus {
-	case constant.OrdererSolo:
+	case constant.OrdererSolo,constant.OrdererEtcdraft:
 		datas.Data = util.Yamls2Bytes(paths.K8sConfigPath, f.kube.baseFiles)
 	case constant.OrdererKafka:
 		datas.Data = util.Yamls2Bytes(paths.K8sConfigPath, append(f.kube.kafkaFiles, f.kube.baseFiles...))
-	case constant.OrdererEtcdraft:
-		logger.Infof("no finished")
 	}
 
 	//停止k8s

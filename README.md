@@ -11,7 +11,7 @@
 #### 动态创建fabric
 - [x] solo
 - [x] kafka
-- [ ] etcdraft
+- [x] etcdraft
 #### 区块链监控
 - [x] 区块链首页统计分析 
 - [ ] 区块链浏览器 

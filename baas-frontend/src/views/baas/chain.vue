@@ -123,11 +123,12 @@
           <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Org</el-button>
         </el-form-item>
         <el-form-item :label="$t('chain.tlsEnabled')" prop="tlsEnabled">
-          <el-radio v-model="temp.tlsEnabled" label="true"> {{ $t('button.true') }} </el-radio>
-          <el-radio v-model="temp.tlsEnabled" label="false"> {{ $t('button.false') }} </el-radio>
+          <el-radio v-model="temp.tlsEnabled" label="true" border> {{ $t('button.true') }} </el-radio>
+          <el-radio v-show="!raftShow" v-model="temp.tlsEnabled" label="false" border> {{ $t('button.false') }} </el-radio>
+          <el-radio v-show="raftShow" v-model="temp.tlsEnabled" label="false" border disabled> {{ $t('button.false') }} </el-radio>
         </el-form-item>
         <el-form-item :label="$t('chain.orderCount')" prop="orderCount">
-          <el-input-number v-model="temp.orderCount" :min="1" :max="orderMaxCount" />
+          <el-input-number v-model="temp.orderCount" :min="orderMinCount" :max="orderMaxCount" />
         </el-form-item>
         <el-form-item :label="$t('chain.peerCount')" prop="peerCount">
           <el-input-number v-model="temp.peerCount" :min="1" :max="peerMaxCount" />
@@ -184,10 +185,10 @@ export default {
         label: 'kafka'
       }, {
         value: 'etcdraft',
-        label: 'etcdraft',
-        disabled: true
+        label: 'etcdraft'
       }],
       orderMaxCount: 10,
+      orderMinCount: 1,
       peerMaxCount: 10,
       orgTags: [],
       inputVisible: false,
@@ -205,6 +206,7 @@ export default {
         tlsEnabled: undefined,
         userAccount: undefined
       },
+      raftShow: false,
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -234,8 +236,15 @@ export default {
       if (this.temp.consensus === 'solo') {
         this.temp.orderCount = 1
         this.orderMaxCount = 1
+        this.raftShow = false
+      } else if (this.temp.consensus === 'etcdraft') {
+        this.temp.orderCount = 3
+        this.orderMinCount = 3
+        this.orderMaxCount = 5
+        this.raftShow = true
       } else {
         this.orderMaxCount = 10
+        this.raftShow = false
       }
     },
     handleClose(tag) {
