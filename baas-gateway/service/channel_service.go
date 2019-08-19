@@ -48,6 +48,17 @@ func (l *ChannelService) Delete(id int) (bool, string) {
 	return false, "delete fail"
 }
 
+func (l *ChannelService) DeleteByChainId(id int) (bool, string) {
+	i, err := l.DbEngine.Where("chain_id = ?", id).Delete(&entity.Channel{})
+	if err != nil {
+		logger.Error(err.Error())
+	}
+	if i > 0 {
+		return true, "delete success"
+	}
+	return false, "delete fail"
+}
+
 func (l *ChannelService) GetByChannel(channel *entity.Channel) (bool, *entity.Channel) {
 	has, err := l.DbEngine.Get(channel)
 	if err != nil {
