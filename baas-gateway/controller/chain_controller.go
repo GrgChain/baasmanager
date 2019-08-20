@@ -202,3 +202,29 @@ func (a *ApiController) ChainDownload(ctx *gin.Context) {
 	ctx.DataFromReader(http.StatusOK, contentLength, "application/x-tar", reader, extraHeaders)
 
 }
+
+
+func (a *ApiController) ChainPodsQuery(ctx *gin.Context) {
+
+	chainId, err := strconv.Atoi(ctx.Query("chainId"))
+	if err != nil {
+		gintool.ResultFail(ctx, "chainId error")
+		return
+	}
+
+	chain := new(entity.Chain)
+	chain.Id = chainId
+	isSuccess, chain := a.chainService.GetByChain(chain)
+	if !isSuccess {
+		gintool.ResultFail(ctx, "chain 不存在")
+		return
+	}
+
+	isSuccess, dat := a.chainService.QueryChainPods(chain)
+	if isSuccess {
+		gintool.ResultOk(ctx, dat)
+	} else {
+		gintool.ResultFail(ctx, "query error")
+	}
+
+}

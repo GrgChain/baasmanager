@@ -340,6 +340,7 @@ func (f FabricService) invokeChaincode(ctx *gin.Context) {
 func (f FabricService) getConnectConfig(chain model.FabricChain, paths generate.UserChainPath) ([]byte, error) {
 	nss := fautil.GetNamesapces(chain)
 	res := f.kube.getChainDomain(nss)
+
 	var ret gintool.RespData
 	err := json.Unmarshal(res, &ret)
 	if err != nil {
@@ -352,6 +353,32 @@ func (f FabricService) getConnectConfig(chain model.FabricChain, paths generate.
 	//连接文件
 	connectConfig := generate.NewConnectConfig(chain, paths.ArtifactPath).GetBytes(ret.Data.(map[string]interface{}))
 	return connectConfig, nil
+}
+
+
+func (f FabricService) queryChainPods(ctx *gin.Context) {
+	var chain model.FabricChain
+	if err := ctx.ShouldBindJSON(&chain); err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	nss := fautil.GetNamesapces(chain)
+	res := f.kube.getChainPods(nss)
+
+	var ret gintool.RespData
+	err := json.Unmarshal(res, &ret)
+	if err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+
+	if ret.Code != 0 {
+		gintool.ResultFail(ctx, "get chain pod error")
+		return
+	}
+
+	gintool.ResultOk(ctx, ret.Data)
+
 }
 
 func (f FabricService) uploadChaincode(ctx *gin.Context) {
@@ -397,7 +424,8 @@ func (f FabricService) downloadArtifacts(ctx *gin.Context) {
 	//打包
 	err := fileutil.Tar(artifactPath, tarFile, false)
 	if err != nil {
-		fmt.Println(err)
+		gintool.ResultFail(ctx, err)
+		return
 	}
 
 	ctx.File(tarFile)
@@ -424,6 +452,7 @@ func Server() {
 	router.POST("/uploadChaincode", fabric.uploadChaincode)
 	router.POST("/downloadChaincode", fabric.downloadChaincode)
 	router.POST("/downloadArtifacts", fabric.downloadArtifacts)
+	router.POST("/queryChainPods", fabric.queryChainPods)
 
 	router.Run(":" + config.Config.GetString("BaasFabricEnginePort"))
 }

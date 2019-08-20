@@ -25,6 +25,10 @@ func (k KubeService) getChainDomain(nss string) []byte {
 	return httputil.Get(k.baasKubeEngineUrl + "/getChainDomain?namesapces=" + nss)
 }
 
+func (k KubeService) getChainPods(nss string) []byte {
+	return httputil.Get(k.baasKubeEngineUrl + "/getChainPods?namesapces=" + nss)
+}
+
 func newKubeService() KubeService {
 	return KubeService{
 		baseFiles:         []string{constant.K8sNamespaceYaml, constant.K8sNfsYaml, constant.K8sOrdererYaml, constant.K8sPeerYaml, constant.K8sCaYaml},

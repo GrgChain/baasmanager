@@ -79,6 +79,13 @@ export function release(data) {
   })
 }
 
+export function podsQuery(id) {
+  return request({
+    url: `/chain/podsQuery?chainId=` + id,
+    method: 'get'
+  })
+}
+
 export function download(id) {
   const aTag = document.createElement('a')
   aTag.href = process.env.VUE_APP_BASE_API + '/chain/download?chainId=' + id

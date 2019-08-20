@@ -57,6 +57,10 @@ func (g FabricService) DownloadChaincode(channel model.FabricChannel) []byte {
 	return httputil.PostJson(config.Config.GetString("BaasFabricEngine")+"/downloadChaincode", channel)
 }
 
+func (g FabricService) QueryChainPods(chain model.FabricChain) []byte {
+	return httputil.PostJson(config.Config.GetString("BaasFabricEngine")+"/queryChainPods", chain)
+}
+
 func NewFabricService() *FabricService {
 	return &FabricService{}
 }

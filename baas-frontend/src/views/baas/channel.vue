@@ -5,6 +5,33 @@
         {{ $t('button.export') }}
       </el-button>
     </sticky>
+    <el-collapse style="padding: 10px;">
+      <div v-for="c in chainPods" :key="c.name">
+        <el-collapse-item>
+          <template slot="title">
+            <div style="padding: 10px;">
+              <i v-if="c.status == 'Running'" class="header-icon el-icon-success" style="color: greenyellow;" />
+              <i v-if="c.status != 'Running'" class="header-icon el-icon-error" style="color:red;" />
+              {{ c.name }}
+            </div>
+          </template>
+          <div style="padding: 10px;">
+            <el-row>
+              <el-col :span="8"><div>状态: {{ c.status }}</div></el-col>
+              <el-col :span="8"><div>类型: {{ c.type }}</div></el-col>
+              <el-col :span="8"><div>创建时间：{{ c.createTime }}</div></el-col>
+            </el-row>
+          </div>
+          <div style="padding: 10px;">
+            <el-row>
+              <el-col :span="8"><div>IP：{{ c.hostIP }}</div></el-col>
+              <el-col :span="8"><div>端口：{{ c.port }}</div></el-col>
+              <el-col :span="8"><div /></el-col>
+            </el-row>
+          </div>
+        </el-collapse-item>
+      </div>
+    </el-collapse>
     <el-row :gutter="20" class="channelbody">
       <!-- <div class="app-container documentation-container">
         <a class="document-btn" href="#">区块链</a>
@@ -34,7 +61,6 @@
             </el-container>
           </el-card>
         </el-col>
-
       </div>
       <el-col :span="6">
         <el-card class="box-card card">
@@ -70,9 +96,8 @@ import MdInput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 // import Mallki from '@/components/TextHoverEffect/Mallki'
 import ElDragSelect from '@/components/DragSelect' // base on element-ui
-import { fetch } from '@/api/chain'
+import { fetch, download, podsQuery } from '@/api/chain'
 import { fetchAllList, add } from '@/api/channel'
-import { download } from '@/api/chain'
 import { mapGetters } from 'vuex'
 import { parseTime } from '@/utils'
 
@@ -97,6 +122,7 @@ export default {
         id: 0,
         userAccount: ''
       },
+      chainPods: [],
       channelRules: {
         channelName: [{ required: true, message: 'channelName is required', trigger: 'blur' }],
         orgs: [{ required: true, message: 'orgs is required', trigger: 'blur' }]
@@ -131,6 +157,12 @@ export default {
             var o = { value: v, label: v }
             this.options.push(o)
           })
+        }
+      })
+
+      podsQuery(this.chainId).then(response => {
+        if (response.code === 0) {
+          this.chainPods = response.data
         }
       })
     },

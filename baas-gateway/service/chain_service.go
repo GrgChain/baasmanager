@@ -125,7 +125,7 @@ func (l *ChainService) BuildChain(chain *entity.Chain) (bool, string) {
 		chain.Status = 1
 		return l.UpdateStatus(chain)
 	} else {
-		return false, "build fail"
+		return false, ret.Msg
 	}
 
 }
@@ -144,7 +144,26 @@ func (l *ChainService) RunChain(chain *entity.Chain) (bool, string) {
 		chain.Status = 2
 		return l.UpdateStatus(chain)
 	} else {
-		return false, "build fail"
+		return false, ret.Msg
+	}
+
+}
+
+func (l *ChainService) QueryChainPods(chain *entity.Chain) (bool, interface{}) {
+
+
+	fc := entity.ParseFabircChain(chain)
+	resp := l.FabircService.QueryChainPods(fc)
+	var ret gintool.RespData
+	err := json.Unmarshal(resp, &ret)
+	if err != nil {
+		return false, "query fail"
+	}
+
+	if ret.Code == 0 {
+		return true,ret.Data
+	} else {
+		return false, ret.Msg
 	}
 
 }
