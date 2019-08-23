@@ -18,7 +18,7 @@ import (
 	"github.com/jonluo94/baasmanager/baas-core/common/log"
 )
 
-var logger = log.GetLogger("password", log.ERROR)
+var logger = log.GetLogger("fasdk", log.ERROR)
 
 const (
 	Admin = "Admin"

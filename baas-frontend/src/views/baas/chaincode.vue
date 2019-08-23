@@ -56,10 +56,10 @@
       </el-table-column>
       <el-table-column :label="$t('button.actions')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button v-if="row.status==0" type="primary" size="mini" @click="handleDeploy(row)">
+          <el-button v-if="row.status==0" type="primary" size="mini" :loading="isload" @click="handleDeploy(row)">
             {{ $t('button.deploy') }}
           </el-button>
-          <el-button v-if="row.status==1" type="success" size="mini" @click="handleUpdate(row)">
+          <el-button v-if="row.status==1" type="success" size="mini" :loading="isload" @click="handleUpdate(row)">
             {{ $t('button.upgrade') }}
           </el-button>
           <el-button v-if="row.status==1" type="warning" size="mini" @click="handleOperation(row)">
@@ -355,6 +355,7 @@ export default {
         type: 'warning'
       })
         .then(async() => {
+          this.isload = true
           await deploy(row)
           this.$notify({
             title: '成功',
@@ -362,6 +363,7 @@ export default {
             type: 'success',
             duration: 2000
           })
+          this.isload = false
           this.getList()
         })
         .catch(err => { console.error(err) })

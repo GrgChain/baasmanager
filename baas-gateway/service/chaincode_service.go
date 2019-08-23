@@ -154,7 +154,7 @@ func (l *ChaincodeService) UpgradeChaincode(chain *entity.Chain, channel *entity
 
 	bys, err := ioutil.ReadFile(cc.GithubPath)
 	if err != nil {
-		return false, "add fail"
+		return false, "upgrade fail"
 	}
 	v, err := strconv.Atoi(cc.Version)
 	if err != nil {
@@ -168,14 +168,14 @@ func (l *ChaincodeService) UpgradeChaincode(chain *entity.Chain, channel *entity
 	var ret gintool.RespData
 	err = json.Unmarshal(resp, &ret)
 	if err != nil {
-		return false, "add fail"
+		return false, "upgrade fail"
 	}
 
 	if ret.Code == 0 {
-		return false, "upload fail"
-	} else {
 		cc.GithubPath = ret.Data.(string)
 		fc.ChaincodePath = ret.Data.(string)
+	} else {
+		return false, "upload fail"
 	}
 
 	args := make([][]byte, 1)
@@ -187,13 +187,13 @@ func (l *ChaincodeService) UpgradeChaincode(chain *entity.Chain, channel *entity
 	resp = l.FabircService.UpdateChaincode(fc)
 	err = json.Unmarshal(resp, &ret)
 	if err != nil {
-		return false, "deploy fail"
+		return false, "upgrade fail"
 	}
 
 	if ret.Code == 0 {
 		return l.Update(cc)
 	} else {
-		return false, "deploy fail"
+		return false, "upgrade fail"
 	}
 }
 
@@ -210,13 +210,13 @@ func (l *ChaincodeService) InvokeChaincode(chain *entity.Chain, channel *entity.
 	var ret gintool.RespData
 	err := json.Unmarshal(resp, &ret)
 	if err != nil {
-		return false, "deploy fail"
+		return false, "invoke fail"
 	}
 
 	if ret.Code == 0 {
 		return true, ret.Data.(string)
 	} else {
-		return false, "deploy fail"
+		return false, "invoke fail"
 	}
 }
 
@@ -233,13 +233,13 @@ func (l *ChaincodeService) QueryChaincode(chain *entity.Chain, channel *entity.C
 	var ret gintool.RespData
 	err := json.Unmarshal(resp, &ret)
 	if err != nil {
-		return false, "deploy fail"
+		return false, "query fail"
 	}
 
 	if ret.Code == 0 {
 		return true, ret.Data.(string)
 	} else {
-		return false, "deploy fail"
+		return false, "query fail"
 	}
 }
 

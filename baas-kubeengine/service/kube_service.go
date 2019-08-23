@@ -12,9 +12,13 @@ import (
 	"github.com/jonluo94/baasmanager/baas-core/core/kubeclient"
 	"github.com/jonluo94/baasmanager/baas-kubeengine/config"
 	"github.com/jonluo94/baasmanager/baas-core/common/util"
+	"strconv"
+	"github.com/jonluo94/baasmanager/baas-core/common/log"
 )
 
 const PortName = "endpoint"
+
+var logger = log.GetLogger("kubeengine.service", log.INFO)
 
 type KubeService struct {
 	client *kubeclient.Clients
@@ -24,6 +28,41 @@ func NewKubeService(client *kubeclient.Clients) *KubeService {
 	return &KubeService{
 		client: client,
 	}
+}
+
+//获取节点ip
+func (k *KubeService) getNodeIPs() []string{
+
+	nodeList := k.client.GetNodeList(metav1.ListOptions{})
+	nodeIPs := make([]string, len(nodeList.Items))
+	for i, node := range nodeList.Items {
+		for _, addr := range node.Status.Addresses {
+			if addr.Type == corev1.NodeInternalIP {
+				nodeIPs[i] = addr.Address
+				break
+			}
+		}
+	}
+	return nodeIPs
+}
+//获取服务map
+func (k *KubeService) getServiceMap(namesapces []string) map[string]string{
+	portMap := make(map[string]string, 0)
+	for _, ns := range namesapces {
+		//获取服务
+		serviceList := k.client.GetServiceList(ns, metav1.ListOptions{})
+		for _, ser := range serviceList.Items {
+			//获取服务域名
+			domain := ser.GetName() + "." + ser.GetNamespace()
+			for _, port := range ser.Spec.Ports {
+				if port.Name == PortName {
+					portMap[domain] = fmt.Sprintf("%d", port.NodePort)
+					break
+				}
+			}
+		}
+	}
+	return portMap
 }
 
 //部署
@@ -60,39 +99,21 @@ func (k *KubeService) GetChainDomain(ctx *gin.Context) {
 	if len(namesapces) == 0 {
 		gintool.ResultFail(ctx, "no namesapces")
 	}
-
-	nodeIps := make([]string, 0)
-	nodeList := k.client.GetNodeList(metav1.ListOptions{})
-	for _, node := range nodeList.Items {
-		for _, addr := range node.Status.Addresses {
-			if addr.Type == corev1.NodeInternalIP {
-				nodeIps = append(nodeIps, addr.Address)
-				break
-			}
-		}
-	}
-
-	portMap := make(map[string]string, 0)
-	for _, ns := range namesapces {
-		serviceList := k.client.GetServiceList(ns, metav1.ListOptions{})
-		for _, ser := range serviceList.Items {
-			domain := ser.GetName() + "." + ser.GetNamespace()
-			for _, port := range ser.Spec.Ports {
-				if port.Name == PortName {
-					portMap[domain] = fmt.Sprintf("%d", port.NodePort)
-					break
-				}
-			}
-		}
-	}
+    //获取节点ip
+    nondeIPs := k.getNodeIPs()
+    //获取服务map
+	portMap := k.getServiceMap(namesapces)
 
 	domains := model.ChainDomain{
-		NodeIps:   nodeIps,
+		NodeIps:   nondeIPs,
 		NodePorts: portMap,
 	}
 
 	gintool.ResultOk(ctx, domains)
 }
+
+
+
 
 func (k *KubeService) GetChainPods(ctx *gin.Context) {
 
@@ -103,13 +124,14 @@ func (k *KubeService) GetChainPods(ctx *gin.Context) {
 		gintool.ResultFail(ctx, "no namesapces")
 	}
 	chainPods := make([]model.ChainPod, 0)
+
+	portMap := k.getServiceMap(namesapces)
+
 	for _, ns := range namesapces {
 		podList := k.client.GetPodList(ns, metav1.ListOptions{})
-		serviceList := k.client.GetServiceList(ns, metav1.ListOptions{})
 
 		for _, pod := range podList.Items {
 			name := ""
-			podPort := int32(0)
 			podType := pod.Labels["role"]
 
 			switch podType {
@@ -123,22 +145,9 @@ func (k *KubeService) GetChainPods(ctx *gin.Context) {
 				continue
 			}
 
-			for _, ser := range serviceList.Items {
-				if podPort != 0 {
-					break
-				}
-
-				domain := ser.GetName() + "." + ser.GetNamespace()
-				if domain != name {
-					continue
-				}
-
-				for _, port := range ser.Spec.Ports {
-					if port.Name == PortName {
-						podPort = port.NodePort
-						break
-					}
-				}
+			podPort ,err := strconv.Atoi(portMap[name])
+			if err != nil {
+               logger.Error(err)
 			}
 
 			cp := model.ChainPod{
@@ -146,7 +155,7 @@ func (k *KubeService) GetChainPods(ctx *gin.Context) {
 				HostIP:    string(pod.Status.HostIP),
 				CreateTime: pod.CreationTimestamp.Format("2006-01-02 15:04:05"),
 				Name:      name,
-				Port:      podPort,
+				Port:      int32(podPort),
 				Type:      podType,
 			}
 			chainPods = append(chainPods, cp)
