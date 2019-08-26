@@ -381,6 +381,30 @@ func (f FabricService) queryChainPods(ctx *gin.Context) {
 
 }
 
+func (f FabricService) changeChainPodResources(ctx *gin.Context) {
+	var reources model.Resources
+	if err := ctx.ShouldBindJSON(&reources); err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	res := f.kube.changeDeployResources(&reources)
+
+	var ret gintool.RespData
+	err := json.Unmarshal(res, &ret)
+	if err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+
+	if ret.Code != 0 {
+		gintool.ResultFail(ctx, "change resouces error")
+		return
+	}
+
+	gintool.ResultOk(ctx, ret.Data)
+
+}
+
 func (f FabricService) uploadChaincode(ctx *gin.Context) {
 	var channel model.FabricChannel
 	if err := ctx.ShouldBindJSON(&channel); err != nil {
@@ -453,6 +477,7 @@ func Server() {
 	router.POST("/downloadChaincode", fabric.downloadChaincode)
 	router.POST("/downloadArtifacts", fabric.downloadArtifacts)
 	router.POST("/queryChainPods", fabric.queryChainPods)
+	router.POST("/changeChainPodResources", fabric.changeChainPodResources)
 
 	router.Run(":" + config.Config.GetString("BaasFabricEnginePort"))
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="mixin-components-container">
-    <sticky :z-index="10" class-name="sub-navbar default">
+    <sticky class-name="sub-navbar default">
       <el-button v-loading="loading" type="success" @click="exportChain">
         {{ $t('button.export') }}
       </el-button>
@@ -9,24 +9,30 @@
       <div v-for="c in chainPods" :key="c.name">
         <el-collapse-item>
           <template slot="title">
-            <div style="padding: 10px;">
+            <div style="padding: 10px;font-size: 15px;">
               <i v-if="c.status == 'Running'" class="header-icon el-icon-success" style="color: greenyellow;" />
               <i v-if="c.status != 'Running'" class="header-icon el-icon-error" style="color:red;" />
               {{ c.name }}
             </div>
           </template>
-          <div style="padding: 10px;">
+          <div style="padding: 10px;font-size: 15px;">
             <el-row>
               <el-col :span="8"><div>状态: {{ c.status }}</div></el-col>
               <el-col :span="8"><div>类型: {{ c.type }}</div></el-col>
               <el-col :span="8"><div>创建时间：{{ c.createTime }}</div></el-col>
             </el-row>
           </div>
-          <div style="padding: 10px;">
+          <div style="padding: 10px;font-size: 15px;">
             <el-row>
               <el-col :span="8"><div>IP：{{ c.hostIP }}</div></el-col>
               <el-col :span="8"><div>端口：{{ c.port }}</div></el-col>
-              <el-col :span="8"><div /></el-col>
+            </el-row>
+          </div>
+          <div style="padding: 10px;border:1px solid #DCDFE6;border-radius: 4px;color:red;text-align: center;font-size: 15px;">
+            <el-row>
+              <el-col :span="8"><div>CPU：{{ c.cpu }}</div></el-col>
+              <el-col :span="8"><div>内存：{{ c.memory }}Mi</div></el-col>
+              <el-col :span="8"><div><el-button type="primary" plain @click="handleChangeSize(c.name,c.cpu,c.memory)">{{ $t('button.changeSize') }}</el-button></div></el-col>
             </el-row>
           </div>
         </el-collapse-item>
@@ -88,6 +94,24 @@
       </el-col>
 
     </el-row>
+    <el-dialog :title="node" :visible.sync="dialogFormVisible2">
+      <el-form ref="dataForm2" :model="channel" label-position="left" label-width="70px" style="width: 500px; margin-left:50px;">
+        <el-form-item :label="$t('resource.cpu')">
+          <el-slider v-model="cpu" :step="0.25" :max="maxCpu" show-stops show-input />
+        </el-form-item>
+        <el-form-item :label="$t('resource.memory')">
+          <el-slider v-model="memory" :step="256" :max="maxMemory" show-stops show-input />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible2 = false">
+          {{ $t('button.cancel') }}
+        </el-button>
+        <el-button type="primary" @click="changeSize()">
+          {{ $t('button.confirm') }}
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -96,7 +120,7 @@ import MdInput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 // import Mallki from '@/components/TextHoverEffect/Mallki'
 import ElDragSelect from '@/components/DragSelect' // base on element-ui
-import { fetch, download, podsQuery } from '@/api/chain'
+import { fetch, download, podsQuery, changeSize } from '@/api/chain'
 import { fetchAllList, add } from '@/api/channel'
 import { mapGetters } from 'vuex'
 import { parseTime } from '@/utils'
@@ -122,6 +146,11 @@ export default {
         id: 0,
         userAccount: ''
       },
+      memory: 0,
+      cpu: 0,
+      maxMemory: 2048,
+      maxCpu: 2,
+      node: '',
       chainPods: [],
       channelRules: {
         channelName: [{ required: true, message: 'channelName is required', trigger: 'blur' }],
@@ -132,6 +161,7 @@ export default {
       channels: [],
       loading: false,
       dialogFormVisible: false,
+      dialogFormVisible2: false,
       fullscreenLoading: false
     }
   },
@@ -211,6 +241,31 @@ export default {
         }
       })
     },
+    handleChangeSize(id, cpu, memory) {
+      this.dialogFormVisible2 = true
+      this.node = id
+      this.cpu = Number(cpu)
+      this.memory = Number(memory)
+      this.$nextTick(() => {
+        this.$refs['dataForm2'].clearValidate()
+      })
+    },
+    changeSize() {
+      var data = {
+        node: this.node,
+        cpu: this.cpu,
+        memory: this.memory
+      }
+      changeSize(data).then(() => {
+        this.$notify({
+          title: '成功',
+          message: '改变规格成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.dialogFormVisible2 = false
+      })
+    },
     reset() {
       this.orgs = []
       this.channel = {
@@ -285,14 +340,15 @@ export default {
 }
 
 .clearfix:after {
-    clear: both
+    clear: both;
 }
 
 .card {
-    margin: 5px
+    margin: 5px;
 }
 
 .longbutton {
     width: 173px;
 }
+
 </style>

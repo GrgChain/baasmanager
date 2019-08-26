@@ -8,6 +8,7 @@ import (
 	"github.com/jonluo94/baasmanager/baas-gateway/entity"
 	"github.com/jonluo94/baasmanager/baas-core/common/gintool"
 	"time"
+	"github.com/jonluo94/baasmanager/baas-core/core/model"
 )
 
 func (a *ApiController) ChainAdd(ctx *gin.Context) {
@@ -225,6 +226,23 @@ func (a *ApiController) ChainPodsQuery(ctx *gin.Context) {
 		gintool.ResultOk(ctx, dat)
 	} else {
 		gintool.ResultFail(ctx, "query error")
+	}
+
+}
+
+func (a *ApiController) ChangeChainResouces(ctx *gin.Context) {
+
+	resouces := new(model.Resources)
+	if err := ctx.ShouldBindJSON(resouces); err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+
+	isSuccess, dat := a.chainService.ChangeChainResouces(resouces)
+	if isSuccess {
+		gintool.ResultOk(ctx, dat)
+	} else {
+		gintool.ResultFail(ctx, "change error")
 	}
 
 }

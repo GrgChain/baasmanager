@@ -7,6 +7,7 @@ import (
 	"github.com/jonluo94/baasmanager/baas-gateway/entity"
 	"github.com/jonluo94/baasmanager/baas-core/common/gintool"
 	"github.com/jonluo94/baasmanager/baas-core/common/json"
+	"github.com/jonluo94/baasmanager/baas-core/core/model"
 )
 
 type ChainService struct {
@@ -167,6 +168,24 @@ func (l *ChainService) QueryChainPods(chain *entity.Chain) (bool, interface{}) {
 	}
 
 }
+
+func (l *ChainService) ChangeChainResouces(resouce *model.Resources) (bool, interface{}) {
+
+	resp := l.FabircService.ChangeChainPodResources(*resouce)
+	var ret gintool.RespData
+	err := json.Unmarshal(resp, &ret)
+	if err != nil {
+		return false, "query fail"
+	}
+
+	if ret.Code == 0 {
+		return true,ret.Data
+	} else {
+		return false, ret.Msg
+	}
+
+}
+
 
 func (l *ChainService) StopChain(chain *entity.Chain) (bool, string) {
 

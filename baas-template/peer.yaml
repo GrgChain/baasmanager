@@ -23,6 +23,10 @@ spec:
         containers:
         - name: peer{{index}}-{{namespace}}-couchdb
           image: hyperledger/fabric-couchdb
+          resources:
+            limits:
+              cpu: "0.25"
+              memory: "256Mi"
           ports:
            - containerPort: 5984
           env:
@@ -37,6 +41,10 @@ spec:
 
         - name: peer{{index}}-{{namespace}}
           image: hyperledger/fabric-peer:1.4.1
+          resources:
+            limits:
+              cpu: "0.25"
+              memory: "256Mi"
           env:
            - name: CORE_LEDGER_STATE_STATEDATABASE
              value: "CouchDB"

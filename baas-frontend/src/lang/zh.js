@@ -201,6 +201,7 @@ export default {
     cancel: '取 消',
     confirm: '确 定',
     see: '查看',
+    changeSize: '改变规格',
     export: '导出'
   },
   user: {
@@ -245,5 +246,9 @@ export default {
   channel: {
     orgs: '通道组织',
     channelName: '通道名'
+  },
+  resource: {
+    cpu: 'CPU',
+    memory: '内存'
   }
 }

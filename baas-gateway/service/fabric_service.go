@@ -61,6 +61,10 @@ func (g FabricService) QueryChainPods(chain model.FabricChain) []byte {
 	return httputil.PostJson(config.Config.GetString("BaasFabricEngine")+"/queryChainPods", chain)
 }
 
+func (g FabricService) ChangeChainPodResources(resource model.Resources) []byte {
+	return httputil.PostJson(config.Config.GetString("BaasFabricEngine")+"/changeChainPodResources", resource)
+}
+
 func NewFabricService() *FabricService {
 	return &FabricService{}
 }

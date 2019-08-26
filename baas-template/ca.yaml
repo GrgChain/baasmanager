@@ -3,7 +3,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   namespace: {{namespace}}
-  name: ca
+  name: ca-{{namespace}}
 spec:
   selector:
     matchLabels:
@@ -23,6 +23,10 @@ spec:
      containers:
        - name: ca
          image: hyperledger/fabric-ca:1.4.1
+         resources:
+           limits:
+             cpu: "0.25"
+             memory: "256Mi"
          env:
          - name: FABRIC_CA_HOME
            value: "/etc/hyperledger/fabric-ca-server"

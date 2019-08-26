@@ -198,6 +198,7 @@ export default {
     cancel: 'Cancel',
     confirm: 'Confirm',
     see: 'See',
+    changeSize: 'Change Size',
     export: 'Export'
   },
   user: {
@@ -242,5 +243,9 @@ export default {
   channel: {
     orgs: 'Orgs',
     channelName: 'Channel Name'
+  },
+  resource: {
+    cpu: 'CPU',
+    memory: 'Memory'
   }
 }
