@@ -99,3 +99,20 @@ func (d *DashboardService) SevenDays(userAccount string, start, end int) (bool, 
 
 	return true, sevenMap
 }
+
+func (d *DashboardService) ConsensusTotal(userAccount string) (bool, []map[string]string) {
+
+	sql := `select count(1) as value ,consensus from chain `
+	group := `group by consensus`
+	where := " where 1=1 "
+	if userAccount != "" {
+		where += " and user_account =" + userAccount
+	}
+
+	totals, err := d.DbEngine.QueryString(sql + where + group)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+
+	return true,totals
+}

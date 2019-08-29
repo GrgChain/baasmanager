@@ -21,6 +21,21 @@ func (a *ApiController) DashboardCounts(ctx *gin.Context) {
 	}
 }
 
+func (a *ApiController) DashboardConsensusTotal(ctx *gin.Context) {
+
+	userAccount := ctx.Query("userAccount")
+	if a.userService.HasAdminRole(userAccount) {
+		//admin 可看所有
+		userAccount = ""
+	}
+	isSuccess, ash := a.dashboardService.ConsensusTotal(userAccount)
+	if isSuccess {
+		gintool.ResultOk(ctx, ash)
+	} else {
+		gintool.ResultFail(ctx, "fail")
+	}
+}
+
 func (a *ApiController) DashboardSevenDays(ctx *gin.Context) {
 
 	start, err := strconv.Atoi(ctx.Query("start"))

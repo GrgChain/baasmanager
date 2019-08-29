@@ -80,6 +80,7 @@ func main() {
 
 		api.GET("/dashboard/counts", apiController.DashboardCounts)
 		api.GET("/dashboard/sevenDays", apiController.DashboardSevenDays)
+		api.GET("/dashboard/consensusTotal", apiController.DashboardConsensusTotal)
 	}
 
 	router.Run(":" + config.Config.GetString("BaasGatewayPort"))

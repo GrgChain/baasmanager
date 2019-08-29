@@ -8,6 +8,14 @@ export function counts(query) {
   })
 }
 
+export function consensusTotal(query) {
+  return request({
+    url: '/dashboard/consensusTotal',
+    method: 'get',
+    params: query
+  })
+}
+
 export function getSevenDays(query) {
   return request({
     url: '/dashboard/sevenDays',
