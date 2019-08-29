@@ -10,12 +10,12 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/ccpackager/gopackager"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/common/cauthdsl"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/ledger"
-	"encoding/json"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
-	"time"
-	"fmt"
-	"os"
+	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/jonluo94/baasmanager/baas-core/common/log"
+	"fmt"
+	"time"
+	"os"
 )
 
 var logger = log.GetLogger("fasdk", log.ERROR)
@@ -39,6 +39,8 @@ type FabricClient struct {
 	retry          resmgmt.RequestOption
 	orderer        resmgmt.RequestOption
 }
+
+
 
 func (f *FabricClient) Setup() error {
 	sdk, err := fabsdk.New(config.FromRaw(f.ConnectionFile, "yaml"))
@@ -212,7 +214,7 @@ func (f *FabricClient) UpgradeChaincode(chaincodeId, chaincodePath, version stri
 	return []byte(resp.TransactionID), nil
 }
 
-func (f *FabricClient) QueryLedger() ([]byte, error) {
+func (f *FabricClient) QueryLedger() (*fab.BlockchainInfoResponse, error) {
 
 	ledger, err := ledger.New(f.sdk.ChannelContext(f.ChannelId, fabsdk.WithUser(f.UserName), fabsdk.WithOrg(f.Orgs[0])))
 	if err != nil {
@@ -225,14 +227,46 @@ func (f *FabricClient) QueryLedger() ([]byte, error) {
 		logger.Error(err.Error())
 		return nil, err
 	}
-	bcis, err := json.Marshal(bci.BCI)
+	return bci, nil
+}
+
+
+func (f *FabricClient) QueryBlock(height uint64) (*FabricBlock, error) {
+
+	ledger, err := ledger.New(f.sdk.ChannelContext(f.ChannelId, fabsdk.WithUser(f.UserName), fabsdk.WithOrg(f.Orgs[0])))
 	if err != nil {
 		logger.Error(err.Error())
 		return nil, err
 	}
-	logger.Info(string(bcis))
-	return bcis, nil
+
+	block, err := ledger.QueryBlock(height)
+	bs, err := parseBlock(blockParse(block))
+
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+	return bs, nil
 }
+
+func (f *FabricClient) QueryBlockByHash(hash []byte) (*FabricBlock, error) {
+
+	ledger, err := ledger.New(f.sdk.ChannelContext(f.ChannelId, fabsdk.WithUser(f.UserName), fabsdk.WithOrg(f.Orgs[0])))
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	block, err := ledger.QueryBlockByHash(hash)
+	bs, err := parseBlock(blockParse(block))
+
+	if err != nil {
+		logger.Error(err.Error())
+		return nil, err
+	}
+	return bs, nil
+}
+
 
 func (f *FabricClient) QueryChaincode(chaincodeId, fcn string, args [][]byte) ([]byte, error) {
 
@@ -313,6 +347,8 @@ func (f *FabricClient) InvokeChaincode(chaincodeId, fcn string, args [][]byte) (
 	return []byte(resp.TransactionID), nil
 }
 
+
+
 func NewFabricClient(connectionFile []byte, channelId string, orgs []string, orderer string) *FabricClient {
 	fabric := &FabricClient{
 		ConnectionFile: connectionFile,
@@ -327,3 +363,6 @@ func NewFabricClient(connectionFile []byte, channelId string, orgs []string, ord
 	return fabric
 
 }
+
+
+

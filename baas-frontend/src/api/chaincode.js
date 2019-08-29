@@ -63,6 +63,20 @@ export function query(data) {
   })
 }
 
+export function queryLedger(id) {
+  return request({
+    url: `/chaincode/queryLedger?channelId=` + id,
+    method: 'get'
+  })
+}
+
+export function queryLatestBlocks(id) {
+  return request({
+    url: `/chaincode/queryLatestBlocks?channelId=` + id,
+    method: 'get'
+  })
+}
+
 export function del(data) {
   return request({
     url: `/chaincode/delete`,

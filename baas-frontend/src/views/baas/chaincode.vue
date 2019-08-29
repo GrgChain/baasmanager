@@ -155,7 +155,7 @@
 </template>
 
 <script>
-import { fetchList, add, upgrade, del, deploy, invoke, query } from '@/api/chaincode'
+import { fetchList, add, upgrade, del, deploy, invoke, query, queryLedger, queryLatestBlocks } from '@/api/chaincode'
 import { fetch } from '@/api/channel'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -302,6 +302,13 @@ export default {
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
+      })
+
+      queryLedger(this.channelId).then(response => {
+        console.log(response.data)
+      })
+      queryLatestBlocks(this.channelId).then(response => {
+        console.log(response.data)
       })
     },
     handleFilter() {

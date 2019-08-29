@@ -70,6 +70,8 @@ func main() {
 		api.POST("/chaincode/deploy", apiController.ChaincodeDeploy)
 		api.POST("/chaincode/upgrade", apiController.ChaincodeUpgrade)
 		api.POST("/chaincode/query", apiController.ChaincodeQuery)
+		api.GET("/chaincode/queryLedger", apiController.ChaincodeLedgerQuery)
+		api.GET("/chaincode/queryLatestBlocks", apiController.ChaincodeLatestBlocksQuery)
 		api.POST("/chaincode/invoke", apiController.ChaincodeInvoke)
 		api.POST("/chaincode/get", apiController.ChaincodeGet)
 		api.POST("/chaincode/delete", apiController.ChaincodeDeleted)

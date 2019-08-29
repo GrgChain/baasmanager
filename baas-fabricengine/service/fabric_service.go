@@ -302,6 +302,84 @@ func (f FabricService) queryChaincode(ctx *gin.Context) {
 	gintool.ResultOk(ctx, string(resp))
 }
 
+func (f FabricService) queryLedger(ctx *gin.Context) {
+	var chain model.FabricChain
+	if err := ctx.ShouldBindJSON(&chain); err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	//获取目录
+	paths := generate.NewProjetc().BuildProjectDir(chain)
+	//连接文件
+	connectConfig, err := f.getConnectConfig(chain, paths)
+	if err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	/*操作fabric start*/
+	fsdk := fasdk.NewFabricClient(connectConfig, chain.ChannelName, chain.PeersOrgs, fautil.GetFirstOrderer(chain))
+	defer fsdk.Close()
+	err = fsdk.Setup()
+	if err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	//创建channel
+	resp, err := fsdk.QueryLedger()
+	if err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+
+	gintool.ResultOk(ctx, resp.BCI)
+}
+
+func (f FabricService) queryLatestBlocks(ctx *gin.Context) {
+	var chain model.FabricChain
+	if err := ctx.ShouldBindJSON(&chain); err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	//获取目录
+	paths := generate.NewProjetc().BuildProjectDir(chain)
+	//连接文件
+	connectConfig, err := f.getConnectConfig(chain, paths)
+	if err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	/*操作fabric start*/
+	fsdk := fasdk.NewFabricClient(connectConfig, chain.ChannelName, chain.PeersOrgs, fautil.GetFirstOrderer(chain))
+	defer fsdk.Close()
+	err = fsdk.Setup()
+	if err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	//创建channel
+	ledger, err := fsdk.QueryLedger()
+	if err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	height := ledger.BCI.Height
+	blocks := make([]*fasdk.FabricBlock,0)
+	/*操作fabric end*/
+	for i:= 0; height > 0;i++{
+		height--
+		if i > 10{
+			break
+		}
+		block, err :=fsdk.QueryBlock(height)
+		if err != nil {
+			gintool.ResultFail(ctx, err)
+			return
+		}
+		blocks = append(blocks,block)
+	}
+	gintool.ResultOk(ctx, blocks)
+}
+
 func (f FabricService) invokeChaincode(ctx *gin.Context) {
 	var channel model.FabricChannel
 	if err := ctx.ShouldBindJSON(&channel); err != nil {
@@ -472,6 +550,8 @@ func Server() {
 	router.POST("/buildChaincode", fabric.buildChaincode)
 	router.POST("/updateChaincode", fabric.updateChaincode)
 	router.POST("/queryChaincode", fabric.queryChaincode)
+	router.POST("/queryLedger", fabric.queryLedger)
+	router.POST("/queryLatestBlocks", fabric.queryLatestBlocks)
 	router.POST("/invokeChaincode", fabric.invokeChaincode)
 	router.POST("/uploadChaincode", fabric.uploadChaincode)
 	router.POST("/downloadChaincode", fabric.downloadChaincode)

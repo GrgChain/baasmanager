@@ -143,6 +143,7 @@ func (f FabricK8s) buildCaYaml() {
 			name := f.Name()
 			if strings.HasSuffix(name, constant.PriKeySuf) {
 				caPriKey = name
+				break
 			}
 		}
 

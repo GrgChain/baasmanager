@@ -125,6 +125,7 @@ import { fetchAllList, add } from '@/api/channel'
 import { mapGetters } from 'vuex'
 import { parseTime } from '@/utils'
 
+let vm = {}
 export default {
   name: 'Channel',
   components: {
@@ -134,6 +135,20 @@ export default {
     // Mallki
   },
   data() {
+    vm = this
+    // 定时刷新
+    var intervalId = setInterval(function() {
+      var path = sessionStorage.getItem('ROUTE_PATH')
+      if (path.indexOf('/baas/channel') !== 0) {
+        clearInterval(intervalId)
+      }
+      podsQuery(vm.chainId).then(response => {
+        if (response.code === 0) {
+          vm.chainPods = response.data
+        }
+      })
+    }, 10 * 1000)
+
     return {
       chainId: 0,
       channel: {

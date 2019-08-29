@@ -3,7 +3,7 @@ BaasFabricEnginePort: 4991
 # baas 的根目录
 BaasRootPath: /home/jonluo/gopath/src/github.com/jonluo94/baasmanager
 # nfs server ip
-BaasNfsServer: 192.168.1.55
+BaasNfsServer: 192.168.1.33
 # k8s引擎地址
 BaasKubeEngine: http://localhost:5991
 # 在baas根目录下nfs共享目录

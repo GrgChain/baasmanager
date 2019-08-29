@@ -49,7 +49,7 @@ func (k *KubeService) getNodeIPs() []string {
 
 //获取服务map
 func (k *KubeService) getServiceMap(namesapces []string) map[string]string {
-	portMap := make(map[string]string, 0)
+	portMap := make(map[string]string)
 	for _, ns := range namesapces {
 		//获取服务
 		serviceList := k.client.GetServiceList(ns, metav1.ListOptions{})
