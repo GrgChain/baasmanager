@@ -39,12 +39,6 @@
       </div>
     </el-collapse>
     <el-row :gutter="20" class="channelbody">
-      <!-- <div class="app-container documentation-container">
-        <a class="document-btn" href="#">区块链</a>
-        <a class="document-btn" href="#">高度</a>
-        <a class="document-btn" href="#">通道数量</a>
-        <a class="document-btn" href="#">链码数量</a>
-      </div> -->
       <div v-for="o in channels" :key="o.id">
         <el-col :span="6">
           <el-card style="margin: 6px;">

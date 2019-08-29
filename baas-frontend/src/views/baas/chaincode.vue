@@ -223,6 +223,19 @@ export default {
   },
   data() {
     vm = this
+    // 定时刷新
+    var intervalId = setInterval(function() {
+      var path = sessionStorage.getItem('ROUTE_PATH')
+      if (path.indexOf('/baas/chaincode') !== 0) {
+        clearInterval(intervalId)
+      }
+      queryLatestBlocks(vm.channelId).then(response => {
+        if (response.code === 0) {
+          vm.blockData = response.data
+        }
+      })
+    }, 10 * 1000)
+
     return {
       uploadUrl: process.env.VUE_APP_BASE_API + '/upload',
       channelId: 0,
@@ -406,7 +419,6 @@ export default {
     queryBlocks() {
       queryLatestBlocks(this.channelId).then(response => {
         this.blockData = response.data
-        console.log(this.blockData)
       })
     },
     handleDeploy(row) {
