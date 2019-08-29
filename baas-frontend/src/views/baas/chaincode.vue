@@ -151,6 +151,56 @@
       </div>
     </el-dialog>
 
+    <el-table
+      :data="blockData"
+      style="width: 100%"
+    >
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <div v-for="t in props.row.transactions" :key="t.no">
+              <el-form-item label="交易NO">
+                <span>{{ t.no }}</span>
+              </el-form-item>
+              <el-form-item label="交易ID">
+                <span>{{ t.txid }}</span>
+              </el-form-item>
+              <el-form-item label="通道">
+                <span>{{ t.channel }}</span>
+              </el-form-item>
+              <el-form-item label="状态">
+                <span>{{ t.status }}</span>
+              </el-form-item>
+              <el-form-item label="交易对象">
+                <span>{{ t.subject }}</span>
+              </el-form-item>
+              <el-form-item label="类型">
+                <span>{{ t.type }}</span>
+              </el-form-item>
+              <el-form-item label="行为">
+                <div v-html="printJson(t.actions)" />
+              </el-form-item>
+              <el-form-item label="配置内容">
+                <div v-html="printJson(t.config)" />
+              </el-form-item>
+            </div>
+          </el-form>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="number"
+        label="高度"
+        width="50"
+      />
+      <el-table-column
+        prop="currentBlockHash"
+        label="当前块哈希"
+      />
+      <el-table-column
+        prop="previousBlockHash"
+        label="上一个块哈希"
+      />
+    </el-table>
   </div>
 </template>
 
@@ -228,6 +278,7 @@ export default {
       },
       fileList: [],
       argTags: [],
+      blockData: [],
       inputVisible: false,
       inputValue: ''
     }
@@ -242,6 +293,10 @@ export default {
     this.channelId = Number(id)
     this.getList()
     this.getChannel()
+    this.queryBlocks()
+    queryLedger(this.channelId).then(response => {
+      console.log(response.data)
+    })
   },
   methods: {
     handleClose(tag) {
@@ -303,13 +358,6 @@ export default {
           this.listLoading = false
         }, 1.5 * 1000)
       })
-
-      queryLedger(this.channelId).then(response => {
-        console.log(response.data)
-      })
-      queryLatestBlocks(this.channelId).then(response => {
-        console.log(response.data)
-      })
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -353,6 +401,12 @@ export default {
             this.getList()
           })
         }
+      })
+    },
+    queryBlocks() {
+      queryLatestBlocks(this.channelId).then(response => {
+        this.blockData = response.data
+        console.log(this.blockData)
       })
     },
     handleDeploy(row) {
@@ -468,6 +522,39 @@ export default {
           return v[j]
         }
       }))
+    },
+    printJson(msg) {
+      if (msg === null || msg === '') {
+        return '&nbsp;'
+      }
+      var rep = '~'
+      var jsonStr = ''
+      if (typeof (msg) === 'string') {
+        jsonStr = JSON.stringify(JSON.parse(msg), null, rep)
+      } else {
+        jsonStr = JSON.stringify(msg, null, rep)
+      }
+
+      var str = ''
+      for (var i = 0; i < jsonStr.length; i++) {
+        var text2 = jsonStr.charAt(i)
+        if (i > 1) {
+          var text = jsonStr.charAt(i - 1)
+          if (rep !== text && rep === text2) {
+            str += '<br/>'
+          }
+        }
+        str += text2
+      }
+      jsonStr = ''
+      for (i = 0; i < str.length; i++) {
+        text = str.charAt(i)
+        if (rep === text) { jsonStr += '&nbsp;&nbsp;&nbsp;&nbsp;' } else {
+          jsonStr += text
+        }
+        if (i === str.length - 2) { jsonStr += '<br/>' }
+      }
+      return jsonStr
     }
   }
 }
@@ -489,4 +576,17 @@ export default {
     margin-left: 10px;
     vertical-align: bottom;
   }
+
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 100%;
+}
 </style>
