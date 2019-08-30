@@ -31,6 +31,7 @@ type FabricTransaction struct {
 	Type string `json:"type"`
 	Subject string `json:"subject"`
 	Config string `json:"config"`
+	Timestamp int64 `json:"timestamp"`
 	Actions []FabricTransactionAction `json:"actions"`
 }
 
@@ -132,6 +133,7 @@ func parseBlock(block *common.Block) (*FabricBlock,error) {
 		}
 		tran.Txid = chdr.TxId
 		tran.Channel = chdr.ChannelId
+		tran.Timestamp = chdr.Timestamp.GetSeconds()
 
 		var shdr *common.SignatureHeader
 		shdr, err = utils.GetSignatureHeader(payload.Header.SignatureHeader)

@@ -171,6 +171,9 @@
               <el-form-item label="状态">
                 <span>{{ t.status }}</span>
               </el-form-item>
+              <el-form-item label="时间">
+                <span>{{ t.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+              </el-form-item>
               <el-form-item label="交易对象">
                 <span>{{ t.subject }}</span>
               </el-form-item>
