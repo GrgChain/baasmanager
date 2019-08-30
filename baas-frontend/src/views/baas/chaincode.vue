@@ -201,7 +201,7 @@
         label="上一个块哈希"
       />
       <el-table-column
-        align="right"
+        align="center"
       >
         <template slot="header" slot-scope="scope">
           <el-input
@@ -209,6 +209,9 @@
             placeholder="输入高度,区块哈希,交易哈希搜索"
             @change="queryBlocks(scope)"
           />
+        </template>
+        <template slot-scope="scope">
+          <span>总共 {{ scope.row.transactions.length }} 条交易</span>
         </template>
       </el-table-column>
     </el-table>
@@ -243,7 +246,11 @@ export default {
       if (vm.search === '') {
         queryLatestBlocks(vm.channelId).then(response => {
           if (response.code === 0) {
-            vm.blockData = response.data
+            if (response.data.length > 0 && vm.blockData.length > 0) {
+              if (vm.blockData[0].number !== response.data[0].number) {
+                vm.blockData = response.data
+              }
+            }
           }
         })
       }
