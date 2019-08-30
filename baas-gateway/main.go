@@ -72,6 +72,7 @@ func main() {
 		api.POST("/chaincode/query", apiController.ChaincodeQuery)
 		api.GET("/chaincode/queryLedger", apiController.ChaincodeLedgerQuery)
 		api.GET("/chaincode/queryLatestBlocks", apiController.ChaincodeLatestBlocksQuery)
+		api.GET("/chaincode/queryBlock", apiController.ChaincodeBlockQuery)
 		api.POST("/chaincode/invoke", apiController.ChaincodeInvoke)
 		api.POST("/chaincode/get", apiController.ChaincodeGet)
 		api.POST("/chaincode/delete", apiController.ChaincodeDeleted)

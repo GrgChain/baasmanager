@@ -200,12 +200,23 @@
         prop="previousBlockHash"
         label="上一个块哈希"
       />
+      <el-table-column
+        align="right"
+      >
+        <template slot="header" slot-scope="scope">
+          <el-input
+            v-model="search"
+            placeholder="输入高度,区块哈希,交易哈希搜索"
+            @change="queryBlocks(scope)"
+          />
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
-import { fetchList, add, upgrade, del, deploy, invoke, query, queryLedger, queryLatestBlocks } from '@/api/chaincode'
+import { fetchList, add, upgrade, del, deploy, invoke, query, queryLedger, queryLatestBlocks, queryBlock } from '@/api/chaincode'
 import { fetch } from '@/api/channel'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -229,14 +240,17 @@ export default {
       if (path.indexOf('/baas/chaincode') !== 0) {
         clearInterval(intervalId)
       }
-      queryLatestBlocks(vm.channelId).then(response => {
-        if (response.code === 0) {
-          vm.blockData = response.data
-        }
-      })
+      if (vm.search === '') {
+        queryLatestBlocks(vm.channelId).then(response => {
+          if (response.code === 0) {
+            vm.blockData = response.data
+          }
+        })
+      }
     }, 10 * 1000)
 
     return {
+      search: '',
       uploadUrl: process.env.VUE_APP_BASE_API + '/upload',
       channelId: 0,
       channel: {
@@ -417,9 +431,15 @@ export default {
       })
     },
     queryBlocks() {
-      queryLatestBlocks(this.channelId).then(response => {
-        this.blockData = response.data
-      })
+      if (this.search === '') {
+        queryLatestBlocks(this.channelId).then(response => {
+          this.blockData = response.data
+        })
+      } else {
+        queryBlock(this.channelId, this.search).then(response => {
+          this.blockData = response.data
+        })
+      }
     },
     handleDeploy(row) {
       this.$confirm('确认部署链码?', '部署链码', {

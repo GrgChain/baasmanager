@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"encoding/pem"
-	"encoding/base64"
 	"github.com/hyperledger/fabric/protos/utils"
 	"github.com/hyperledger/fabric/common/configtx"
 	"github.com/hyperledger/fabric/protos/common"
@@ -14,6 +13,7 @@ import (
 	"github.com/jonluo94/baasmanager/baas-core/common/json"
 	"github.com/hyperledger/fabric/protos/peer"
 	"github.com/hyperledger/fabric/core/ledger/kvledger/txmgmt/rwsetutil"
+	"encoding/hex"
 )
 
 type FabricBlock struct {
@@ -47,6 +47,9 @@ type FabricTransactionActionRWSet struct {
 
 
 func blockParse(block *cm.Block ) *common.Block{
+	if block == nil {
+		return nil
+	}
 	cmBlock := new(common.Block)
 	cmBlock.Data = &common.BlockData{
 		Data:block.Data.Data,
@@ -80,14 +83,19 @@ func decodeSerializedIdentity(creator []byte) (string, error) {
 	uname := cert.Subject.CommonName
 	return uname, nil
 }
+
 func parseBlock(block *common.Block) (*FabricBlock,error) {
+	if block == nil {
+		return nil,nil
+	}
+
 	var err error
 	faBlock := new(FabricBlock)
 	trans := make([]FabricTransaction,0)
 	// Handle header
 	faBlock.Number = block.GetHeader().Number
-	faBlock.CurrentBlockHash = base64.StdEncoding.EncodeToString(block.GetHeader().DataHash)
-	faBlock.PreviousBlockHash = base64.StdEncoding.EncodeToString(block.GetHeader().PreviousHash)
+	faBlock.CurrentBlockHash = hex.EncodeToString(block.GetHeader().Hash())
+	faBlock.PreviousBlockHash = hex.EncodeToString(block.GetHeader().PreviousHash)
 	// Handle transaction
 	var tranNo int64 = -1
 	txsFilter := util.TxValidationFlags(block.Metadata.Metadata[common.BlockMetadataIndex_TRANSACTIONS_FILTER])

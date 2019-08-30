@@ -69,6 +69,10 @@ func (g FabricService) QueryLatestBlocks(channel model.FabricChain) []byte {
 	return httputil.PostJson(config.Config.GetString("BaasFabricEngine")+"/queryLatestBlocks", channel)
 }
 
+func (g FabricService) QueryBlock(channel model.FabricChain,search string) []byte {
+	return httputil.PostJson(config.Config.GetString("BaasFabricEngine")+"/queryBlock?search="+search, channel)
+}
+
 func (g FabricService) ChangeChainPodResources(resource model.Resources) []byte {
 	return httputil.PostJson(config.Config.GetString("BaasFabricEngine")+"/changeChainPodResources", resource)
 }

@@ -16,6 +16,8 @@ import (
 	"github.com/jonluo94/baasmanager/baas-fabricengine/config"
 	"github.com/jonluo94/baasmanager/baas-core/common/json"
 	"github.com/jonluo94/baasmanager/baas-core/common/util"
+	"strconv"
+	"encoding/hex"
 )
 
 var logger = log.GetLogger("fabricengine.service", log.INFO)
@@ -380,6 +382,69 @@ func (f FabricService) queryLatestBlocks(ctx *gin.Context) {
 	gintool.ResultOk(ctx, blocks)
 }
 
+func (f FabricService) queryBlock(ctx *gin.Context) {
+	var chain model.FabricChain
+	if err := ctx.ShouldBindJSON(&chain); err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	search := ctx.Query("search")
+	//获取目录
+	paths := generate.NewProjetc().BuildProjectDir(chain)
+	//连接文件
+	connectConfig, err := f.getConnectConfig(chain, paths)
+	if err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	/*操作fabric start*/
+	fsdk := fasdk.NewFabricClient(connectConfig, chain.ChannelName, chain.PeersOrgs, fautil.GetFirstOrderer(chain))
+	defer fsdk.Close()
+	err = fsdk.Setup()
+	if err != nil {
+		gintool.ResultFail(ctx, err)
+		return
+	}
+	//创建channel
+	blocks := make([]*fasdk.FabricBlock,0)
+	/*操作fabric end*/
+    var block *fasdk.FabricBlock
+	height,err := strconv.Atoi(search)
+	if err == nil {
+		block, err =fsdk.QueryBlock(uint64(height))
+		if err != nil {
+			gintool.ResultFail(ctx, err)
+			return
+		}
+	}else {
+		hash,err := hex.DecodeString(search)
+		if err != nil {
+			gintool.ResultFail(ctx, err)
+			return
+		}
+		block, err = fsdk.QueryBlockByHash(hash)
+		if err != nil {
+			gintool.ResultFail(ctx, err)
+			return
+		}
+		if block == nil {
+			block, err = fsdk.QueryBlockByTxid(search)
+			if err != nil {
+				gintool.ResultFail(ctx, err)
+				return
+			}
+		}
+	}
+	if block != nil {
+		blocks = append(blocks,block)
+	}
+	gintool.ResultOk(ctx, blocks)
+	return
+
+
+
+}
+
 func (f FabricService) invokeChaincode(ctx *gin.Context) {
 	var channel model.FabricChannel
 	if err := ctx.ShouldBindJSON(&channel); err != nil {
@@ -552,6 +617,7 @@ func Server() {
 	router.POST("/queryChaincode", fabric.queryChaincode)
 	router.POST("/queryLedger", fabric.queryLedger)
 	router.POST("/queryLatestBlocks", fabric.queryLatestBlocks)
+	router.POST("/queryBlock", fabric.queryBlock)
 	router.POST("/invokeChaincode", fabric.invokeChaincode)
 	router.POST("/uploadChaincode", fabric.uploadChaincode)
 	router.POST("/downloadChaincode", fabric.downloadChaincode)

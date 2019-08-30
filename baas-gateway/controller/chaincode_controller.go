@@ -203,6 +203,39 @@ func (a *ApiController) ChaincodeLatestBlocksQuery(ctx *gin.Context) {
 	}
 }
 
+func (a *ApiController) ChaincodeBlockQuery(ctx *gin.Context) {
+
+	channelId, err := strconv.Atoi(ctx.Query("channelId"))
+	if err != nil {
+		gintool.ResultFail(ctx, "channelId error")
+		return
+	}
+	search := ctx.Query("search")
+
+	channel := new(entity.Channel)
+	channel.Id = channelId
+	isSuccess, channel := a.channelService.GetByChannel(channel)
+	if !isSuccess {
+		gintool.ResultFail(ctx, "channel 不存在")
+		return
+	}
+
+	chain := new(entity.Chain)
+	chain.Id = channel.ChainId
+	isSuccess, chain = a.chainService.GetByChain(chain)
+	if !isSuccess {
+		gintool.ResultFail(ctx, "chain 不存在")
+		return
+	}
+
+	isSuccess, msg := a.chaincodeService.QueryBlock(chain, channel, search)
+	if isSuccess {
+		gintool.ResultOk(ctx, msg)
+	} else {
+		gintool.ResultFail(ctx, msg)
+	}
+}
+
 func (a *ApiController) ChaincodeInvoke(ctx *gin.Context) {
 
 	cc := new(entity.Chaincode)

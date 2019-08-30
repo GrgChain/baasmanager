@@ -77,6 +77,13 @@ export function queryLatestBlocks(id) {
   })
 }
 
+export function queryBlock(cid, search) {
+  return request({
+    url: `/chaincode/queryBlock?channelId=` + cid + `&search=` + search,
+    method: 'get'
+  })
+}
+
 export function del(data) {
   return request({
     url: `/chaincode/delete`,

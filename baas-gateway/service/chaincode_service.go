@@ -279,6 +279,24 @@ func (l *ChaincodeService) QueryLatestBlocks(chain *entity.Chain, channel *entit
 
 }
 
+func (l *ChaincodeService) QueryBlock(chain *entity.Chain, channel *entity.Channel,search string) (bool, interface{}) {
+
+	fc := entity.ParseFabircChainAndChannel(chain, channel)
+	resp := l.FabircService.QueryBlock(fc,search)
+	var ret gintool.RespData
+	err := json.Unmarshal(resp, &ret)
+	if err != nil {
+		return false, "query fail"
+	}
+
+	if ret.Code == 0 {
+		return true, ret.Data
+	} else {
+		return false, ret.Msg
+	}
+
+}
+
 func NewChaincodeService(engine *xorm.Engine, fabircService *FabricService) *ChaincodeService {
 	return &ChaincodeService{
 		DbEngine:      engine,
