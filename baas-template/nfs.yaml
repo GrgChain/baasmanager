@@ -7,7 +7,7 @@ metadata:
     app: {{namespace}}-pv
 spec:
   capacity:
-    storage: 50Mi
+    storage: 10Mi
   accessModes:
     - ReadWriteMany
   nfs:
@@ -39,7 +39,7 @@ metadata:
     app: {{namespace}}-pvdata
 spec:
   capacity:
-    storage: 50Gi
+    storage: 1Gi
   accessModes:
     - ReadWriteMany
   nfs:
@@ -57,7 +57,7 @@ spec:
    - ReadWriteMany
  resources:
    requests:
-     storage: 10Gi
+     storage: 1Gi
  selector:
    matchLabels:
      app: {{namespace}}-pvdata

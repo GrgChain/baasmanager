@@ -4,7 +4,7 @@ const (
 	//每条chain的fabric证书文件目录
 	BaasArtifacts = "baas-artifacts"
 	//每条chain的fabric的k8s文件目录
-	BaasK8sConfig = "baas-k8s-conf																																																																																																																																															ig"
+	BaasK8sConfig = "baas-k8s-config"
 	//每条chain的fabric的数据目录
 	BaasFabricData = "baas-fabric-data"
 	//系统channel名称

@@ -231,7 +231,7 @@
   ```
   在 ExecStart 参数后追加：
   ```
-  --dns=10.96.0.10 --dns=192.168.0.1 --dns-search default.svc.cluster.local --dns-search svc.cluster.local --dns-opt ndots:2 --dns-opt timeout:2 --dns-opt attempts:2
+  --dns=10.96.0.10 --dns=192.168.0.1 --dns-search default.svc.cluster.local --dns-search svc.cluster.local --dns-opt ndots:5 --dns-opt timeout:2 --dns-opt attempts:2
   ```
   重启docker
   ```
