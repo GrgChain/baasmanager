@@ -13,7 +13,7 @@ metadata:
     app: {{namespace}}-pvdata
 spec:
   capacity:
-    storage: 50Gi
+    storage: 1Gi
   accessModes:
     - ReadWriteMany
   nfs:
@@ -31,7 +31,7 @@ spec:
    - ReadWriteMany
  resources:
    requests:
-     storage: 10Gi
+     storage: 1Gi
  selector:
    matchLabels:
      app: {{namespace}}-pvdata
@@ -41,7 +41,7 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   namespace: {{namespace}}
-  name: zookeeper
+  name: zookeeper-{{namespace}}
 spec:
   serviceName: zkheadless
   selector:
@@ -62,7 +62,7 @@ spec:
           image: hyperledger/fabric-zookeeper
           env:
             - name: ZOO_SERVERS
-              value: "server.1=zookeeper-0.zkheadless:2888:3888 server.2=zookeeper-1.zkheadless:2888:3888 server.3=zookeeper-2.zkheadless:2888:3888"
+              value: "server.1=zookeeper-{{namespace}}-0.zkheadless:2888:3888 server.2=zookeeper-{{namespace}}-1.zkheadless:2888:3888 server.3=zookeeper-{{namespace}}-2.zkheadless:2888:3888"
             - name: ZOO_TICK_TIME
               value: "2000"
             - name: ZOO_INIT_LIMIT
