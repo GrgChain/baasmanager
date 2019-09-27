@@ -36,6 +36,11 @@ func (a *ApiController) ChainGet(ctx *gin.Context) {
 		gintool.ResultFail(ctx, err)
 		return
 	}
+
+	if a.userService.HasAdminRole(chain.UserAccount) {
+		//admin 可看所有
+		chain.UserAccount = ""
+	}
 	isSuccess, chain := a.chainService.GetByChain(chain)
 	if isSuccess {
 		gintool.ResultOk(ctx, chain)

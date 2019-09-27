@@ -40,11 +40,11 @@ func GetAnchorsTxs(f model.FabricChain, artifactPath string) []string {
 }
 
 func GetChaincodeGithub(f model.FabricChannel) string {
-	return filepath.Join(config.Config.GetString("BaasChaincodeGithub"), f.Account, f.ChannelName, f.ChaincodeId, f.Version)
+	return filepath.Join(config.Config.GetString("BaasChaincodeGithub"), f.Account, f.ChainName,f.ChannelName, f.ChaincodeId, f.Version)
 }
 
 func GetChaincodeLocalGithub(f model.FabricChannel) string {
-	return filepath.Join(os.Getenv("GOPATH"), "src", config.Config.GetString("BaasChaincodeGithub"), f.Account, f.ChannelName, f.ChaincodeId, f.Version)
+	return filepath.Join(os.Getenv("GOPATH"), "src", config.Config.GetString("BaasChaincodeGithub"), f.Account, f.ChainName, f.ChannelName, f.ChaincodeId, f.Version)
 }
 
 func GetChaincodeGithubFile(f model.FabricChannel) string {

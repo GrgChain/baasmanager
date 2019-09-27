@@ -67,7 +67,7 @@ func blockParse(block *cm.Block ) *common.Block{
 }
 
 func decodeSerializedIdentity(creator []byte) (string, error) {
-	certStart := bytes.IndexAny(creator, "-----BEGIN")
+	certStart := bytes.Index(creator, []byte("-----BEGIN"))
 	if certStart == -1 {
 		return "", fmt.Errorf("No certificate found")
 	}

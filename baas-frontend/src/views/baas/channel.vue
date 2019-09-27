@@ -186,7 +186,7 @@ export default {
     this.getAllChannel()
   },
   methods: {
-    getChain(id) {
+    getChain() {
       this.chain.id = this.chainId
       this.chain.userAccount = this.account
       fetch(this.chain).then(response => {
