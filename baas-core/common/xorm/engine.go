@@ -8,6 +8,7 @@ import (
 
 	"github.com/jonluo94/baasmanager/baas-core/common/log"
 	"github.com/go-xorm/core"
+	"time"
 )
 
 var level = log.ERROR
@@ -64,6 +65,7 @@ func GetEngine(configFile string) *xorm.Engine {
 	engine.ShowSQL(config.Showsql)
 	engine.SetMaxIdleConns(config.Maxidle)
 	engine.SetMaxOpenConns(config.Maxopen)
-
+	//连接生存时间半个小时
+	engine.SetConnMaxLifetime(1800 * time.Second)
 	return engine
 }

@@ -64,6 +64,7 @@ func GetEngine(configFile string) *xorm.Engine {
 	engine.ShowSQL(config.Showsql)
 	engine.SetMaxIdleConns(config.Maxidle)
 	engine.SetMaxOpenConns(config.Maxopen)
-
+	//连接生存时间半个小时
+	engine.SetConnMaxLifetime(1800 * time.Second)
 	return engine
 }
