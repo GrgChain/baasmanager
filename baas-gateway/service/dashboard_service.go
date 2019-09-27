@@ -29,7 +29,7 @@ func (d *DashboardService) Counts(userAccount string) (bool, *model.Dashboard) {
 		values = append(values, userAccount)
 	}
 
-	dash.Users, err = d.DbEngine.Where(where, values...).Count(new(entity.User))
+	dash.Users, err = d.DbEngine.Count(new(entity.User))
 	if err != nil {
 		logger.Error(err.Error())
 	}
@@ -55,16 +55,21 @@ func (d *DashboardService) SevenDays(userAccount string, start, end int) (bool, 
 	sevenMap := make(map[string][]map[string]string)
 
 	where := " where 1=1 "
+	uwhere := where
 	if userAccount != "" {
-		where += " and user_account =" + userAccount
+		where += fmt.Sprintf(" and user_account = '%s'" , userAccount)
 	}
 
 	if start != 0 {
-		where += fmt.Sprintf(" and created >= %d", start)
+		ws := fmt.Sprintf(" and created >= %d", start)
+		where += ws
+		uwhere += ws
 	}
 
 	if end != 0 {
-		where += fmt.Sprintf(" and created <= %d", end)
+		 ws := fmt.Sprintf(" and created <= %d", end)
+		where += ws
+		uwhere += ws
 	}
 
 	sql := ` SELECT from_unixtime( created, "%Y-%m-%d" ) AS days, count( id ) AS counts FROM `
@@ -91,7 +96,7 @@ func (d *DashboardService) SevenDays(userAccount string, start, end int) (bool, 
 	sevenMap["chaincodes"] = chaincodes
 
 	table = "user"
-	users, err := d.DbEngine.QueryString(sql + table + where + group)
+	users, err := d.DbEngine.QueryString(sql + table + uwhere + group)
 	if err != nil {
 		logger.Error(err.Error())
 	}
@@ -102,11 +107,11 @@ func (d *DashboardService) SevenDays(userAccount string, start, end int) (bool, 
 
 func (d *DashboardService) ConsensusTotal(userAccount string) (bool, []map[string]string) {
 
-	sql := `select count(1) as value ,consensus from chain `
-	group := `group by consensus`
+	sql := ` select count(1) as value ,consensus from chain `
+	group := ` group by consensus `
 	where := " where 1=1 "
 	if userAccount != "" {
-		where += " and user_account =" + userAccount
+		where += fmt.Sprintf(" and user_account = '%s'" , userAccount)
 	}
 
 	totals, err := d.DbEngine.QueryString(sql + where + group)
