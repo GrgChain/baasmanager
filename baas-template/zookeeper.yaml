@@ -88,6 +88,10 @@ kind: Service
 metadata:
    namespace: {{namespace}}
    name: zkheadless
+   labels:
+      app: hyperledger
+      role: zookeeper
+      ns: {{namespace}}
 spec:
  selector:
    app: hyperledger

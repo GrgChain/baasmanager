@@ -92,6 +92,11 @@ kind: Service
 metadata:
   name: orderer{{index}}
   namespace: {{namespace}}
+  labels:
+    app: hyperledger
+    role: orderer
+    orderer-id: orderer{{index}}
+    org: {{namespace}}
 spec:
  selector:
    app: hyperledger

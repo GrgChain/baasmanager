@@ -127,6 +127,11 @@ kind: Service
 metadata:
    namespace: {{namespace}}
    name: peer{{index}}
+   labels:
+     app: hyperledger
+     role: peer
+     peer-id: peer{{index}}
+     org: {{namespace}}
 spec:
  selector:
    app: hyperledger

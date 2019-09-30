@@ -72,6 +72,10 @@ kind: Service
 metadata:
   name: kafka{{index}}
   namespace: {{namespace}}
+  lables:
+    app: hyperledger
+    role: kafka
+    kafka-id: kafka{{index}}
 spec:
  selector:
     app: hyperledger

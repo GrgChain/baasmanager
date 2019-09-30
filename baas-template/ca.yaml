@@ -68,6 +68,11 @@ kind: Service
 metadata:
    namespace: {{namespace}}
    name: ca
+   labels:
+      app: hyperledger
+      role: ca
+      org: {{namespace}}
+      name: ca
 spec:
  selector:
    app: hyperledger
