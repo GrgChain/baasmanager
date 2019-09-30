@@ -4,6 +4,10 @@ kind: Deployment
 metadata:
   name: kafka{{index}}-{{namespace}}
   namespace: {{namespace}}
+  labels:
+    app: hyperledger
+    role: kafka
+    kafka-id: kafka{{index}}
 spec:
   selector:
       matchLabels:

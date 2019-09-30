@@ -4,6 +4,11 @@ kind: Deployment
 metadata:
   namespace: {{namespace}}
   name: orderer{{index}}-{{namespace}}
+  labels:
+    app: hyperledger
+    role: orderer
+    org: {{namespace}}
+    orderer-id: orderer{{index}}
 spec:
   selector:
     matchLabels:

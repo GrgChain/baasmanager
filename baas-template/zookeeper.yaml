@@ -42,6 +42,10 @@ kind: StatefulSet
 metadata:
   namespace: {{namespace}}
   name: zookeeper-{{namespace}}
+  labels:
+    app: hyperledger
+    role: zookeeper
+    ns: {{namespace}}
 spec:
   serviceName: zkheadless
   selector:

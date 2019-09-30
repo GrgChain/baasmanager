@@ -4,6 +4,11 @@ kind: Deployment
 metadata:
   namespace: {{namespace}}
   name:	peer{{index}}-{{namespace}}
+  labels:
+    app: hyperledger
+    role: peer
+    peer-id: peer{{index}}
+    org: {{namespace}}
 spec:
   selector:
     matchLabels:

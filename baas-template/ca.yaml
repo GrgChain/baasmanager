@@ -4,6 +4,11 @@ kind: Deployment
 metadata:
   namespace: {{namespace}}
   name: ca-{{namespace}}
+  labels:
+    app: hyperledger
+    role: ca
+    org: {{namespace}}
+    name: ca
 spec:
   selector:
     matchLabels:

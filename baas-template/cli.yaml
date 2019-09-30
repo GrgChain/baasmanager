@@ -4,6 +4,8 @@ kind: Deployment
 metadata:
    namespace: {{namespace}}
    name: cli
+   labels:
+     app: cli
 spec:
   replicas: 1
   selector:

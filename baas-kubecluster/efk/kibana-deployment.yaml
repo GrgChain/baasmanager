@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kibana-logging
@@ -16,22 +16,23 @@ spec:
     metadata:
       labels:
         k8s-app: kibana-logging
+      annotations:
+        seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
     spec:
-      serviceAccountName: efk
       containers:
       - name: kibana-logging
-        image: bigwhite/kibana:v4.6.1-1
+        image: registry.cn-shenzhen.aliyuncs.com/jonluo/docker.elastic.co_kibana:6.2.4
         resources:
-          # keep request = limit to keep this container in guaranteed class
+          # need more cpu upon initialization, therefore burstable class
           limits:
-            cpu: 100m
+            cpu: 1000m
           requests:
             cpu: 100m
         env:
-          - name: "ELASTICSEARCH_URL"
-            value: "http://elasticsearch-logging:9200"
-          - name: "KIBANA_BASE_URL"
-            value: "/api/v1/namespaces/kube-system/services/kibana-logging/proxy"
+          - name: ELASTICSEARCH_URL
+            value: http://elasticsearch-logging:9200
+          #- name: SERVER_BASEPATH
+          #  value: /api/v1/namespaces/kube-system/services/kibana-logging/proxy
         ports:
         - containerPort: 5601
           name: ui
