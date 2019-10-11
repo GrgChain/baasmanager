@@ -347,7 +347,7 @@ export default {
       })
     },
     handleInputConfirm() {
-      const inputValue = this.inputValue.toLowerCase()
+      const inputValue = this.inputValue
       if (inputValue) {
         this.argTags.push(inputValue)
         this.temp.args = this.argTags.join(',')
