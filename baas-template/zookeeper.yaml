@@ -63,7 +63,7 @@ spec:
     spec:
       containers:
         - name: zookeeper
-          image: hyperledger/fabric-zookeeper
+          image: hyperledger/fabric-zookeeper:0.4.15
           env:
             - name: ZOO_SERVERS
               value: "server.1=zookeeper-{{namespace}}-0.zkheadless:2888:3888 server.2=zookeeper-{{namespace}}-1.zkheadless:2888:3888 server.3=zookeeper-{{namespace}}-2.zkheadless:2888:3888"

@@ -28,7 +28,7 @@ spec:
         command: ['sh', '-c', "telnet zookeeper-{{namespace}}-0.zkheadless 2181 && telnet zookeeper-{{namespace}}-1.zkheadless 2181 && telnet zookeeper-{{namespace}}-2.zkheadless 2181"]
       containers:
       - name: kafka{{index}}-{{namespace}}
-        image: hyperledger/fabric-kafka
+        image: hyperledger/fabric-kafka:0.4.15
         ports:
           - containerPort: 9092
         env:

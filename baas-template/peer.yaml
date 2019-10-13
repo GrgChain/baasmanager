@@ -27,7 +27,7 @@ spec:
     spec:
         containers:
         - name: peer{{index}}-{{namespace}}-couchdb
-          image: hyperledger/fabric-couchdb
+          image: hyperledger/fabric-couchdb:0.4.15
           resources:
             limits:
               cpu: "0.25"
