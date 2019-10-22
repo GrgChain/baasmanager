@@ -149,6 +149,10 @@ spec:
      protocol: TCP
      port: 7052
      targetPort: 7052
+   - name: couchdb
+     protocol: TCP
+     port: 5984
+     targetPort: 5984
 #     nodePort: 30052
 #   - name: event-listen
 #     protocol: TCP
