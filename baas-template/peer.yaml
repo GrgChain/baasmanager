@@ -17,6 +17,9 @@ spec:
         peer-id: peer{{index}}
         org: {{namespace}}
   replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -30,8 +33,8 @@ spec:
           image: hyperledger/fabric-couchdb:0.4.15
           resources:
             limits:
-              cpu: "0.25"
-              memory: "256Mi"
+              cpu: "0.5"
+              memory: "512Mi"
           ports:
            - containerPort: 5984
           env:
@@ -39,17 +42,17 @@ spec:
              value: ""
            - name: COUCHDB_PASSWORD
              value: ""
-#          volumeMounts:
-#           - mountPath: /opt/couchdb/data
-#             name: peerdata
-#             subPath: couchdb.peer{{index}}.{{namespace}}
+          volumeMounts:
+           - mountPath: /opt/couchdb/data
+             name: peerdata
+             subPath: couchdb.peer{{index}}.{{namespace}}
 
         - name: peer{{index}}-{{namespace}}
           image: hyperledger/fabric-peer:1.4.1
           resources:
             limits:
-              cpu: "0.25"
-              memory: "256Mi"
+              cpu: "0.5"
+              memory: "512Mi"
           env:
            - name: CORE_LEDGER_STATE_STATEDATABASE
              value: "CouchDB"

@@ -1,6 +1,6 @@
 xorm:
   drivename: mysql
-  ip: 127.0.0.1
+  ip: 10.252.79.20
   port: 3306
   database: baas_api
   user: root
