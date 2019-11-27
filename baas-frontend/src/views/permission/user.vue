@@ -142,7 +142,7 @@ export default {
         name: '',
         account: '',
         password: '',
-        avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
+        avatar: 'default.gif'
       },
       dialogFormVisible: false,
       dialogFormVisible2: false,
@@ -197,7 +197,7 @@ export default {
         name: '',
         account: '',
         password: '',
-        avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
+        avatar: 'default.gif'
       }
     },
     handleClose(tag, id) {

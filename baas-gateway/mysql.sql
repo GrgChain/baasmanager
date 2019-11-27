@@ -77,7 +77,7 @@ create table chaincode
 
 
 -- admin 123456
-INSERT INTO baas_api.user (id, account, password, avatar, name, created) VALUES (1, 'admin', 'pbkdf2_sha256$180000$JEavgdkTBzU3$3pIgoygm1QBtgbfEHeWZ7H4O2rEIgkgLxYV48mE+J4M=', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif', 'admin', 1557977199);
+INSERT INTO baas_api.user (id, account, password, avatar, name, created) VALUES (1, 'admin', 'pbkdf2_sha256$180000$JEavgdkTBzU3$3pIgoygm1QBtgbfEHeWZ7H4O2rEIgkgLxYV48mE+J4M=', 'default.gif', 'admin', 1557977199);
 
 INSERT INTO baas_api.role (rkey, name, description) VALUES ('admin', '管理员', '超级管理员,拥有所有权限');
 INSERT INTO baas_api.role (rkey, name, description) VALUES ('user', '用户', '普通用户');
