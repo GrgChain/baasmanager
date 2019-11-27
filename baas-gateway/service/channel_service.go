@@ -49,6 +49,13 @@ func (l *ChannelService) Delete(id int) (bool, string) {
 }
 
 func (l *ChannelService) DeleteByChainId(id int) (bool, string) {
+
+	sql := "delete from chaincode where channel_id in ( select id from channel where chain_id = ?)"
+	_, err := l.DbEngine.Exec(sql, id)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+
 	i, err := l.DbEngine.Where("chain_id = ?", id).Delete(&entity.Channel{})
 	if err != nil {
 		logger.Error(err.Error())

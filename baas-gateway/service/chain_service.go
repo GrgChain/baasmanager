@@ -41,7 +41,7 @@ func (l *ChainService) Update(chain *entity.Chain) (bool, string) {
 
 func (l *ChainService) UpdateStatus(chain *entity.Chain) (bool, string) {
 
-	sql := "update `chain` set status = ? where id = ?"
+	sql := "update chain set status = ? where id = ?"
 	res, err := l.DbEngine.Exec(sql, chain.Status, chain.Id)
 	if err != nil {
 		logger.Error(err.Error())

@@ -151,11 +151,15 @@ func (a *ApiController) UserInfo(ctx *gin.Context) {
 func (a *ApiController) UserAuthorize(ctx *gin.Context) {
 	var token string
 	var err error
+	m := make(map[string]interface{})
+	m["code"] = 2
+
 	token = ctx.GetHeader("X-Token")
 	if token == "" {
 		token, err = ctx.Cookie("Admin-Token")
 		if err != nil {
-			gintool.ResultFail(ctx, err.Error())
+			m["msg"] = err.Error()
+			gintool.ResultMap(ctx, m)
 			ctx.Abort()
 			return
 		}
@@ -163,15 +167,15 @@ func (a *ApiController) UserAuthorize(ctx *gin.Context) {
 
 	session := gintool.GetSession(ctx, token)
 	if nil == session {
-		gintool.ResultFail(ctx, "token不存在")
+		m["msg"] = "token不存在"
+		gintool.ResultMap(ctx, m)
+		ctx.Abort()
 		return
 	}
 	_, err = a.userService.CheckToken(token, &entity.User{Id: session.(int)})
 
 	if err != nil {
 		if err.Error() == "token已过期" || err.Error() == "token无效" {
-			m := make(map[string]interface{})
-			m["code"] = 2
 			m["msg"] = err.Error()
 			gintool.ResultMap(ctx, m)
 		} else {
