@@ -97,9 +97,26 @@
           </el-upload>
         </el-form-item>
         <el-form-item :label="$t('chaincode.policy')" prop="policy">
-          <el-input v-model="temp.policy" />
-          <span style="color: #E74C3C;">MSP:{{ msp }}</span>
-          <a class="el-upload__tip" target="_blank" href="https://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html">查看文档</a>
+          <el-input v-model="temp.policy" disabled />
+          <el-popover placement="right" width="300" trigger="click" style="position: absolute;margin-left: 5px;">
+            <el-select v-model="policy" placeholder="范围" style="margin:2px 5px;">
+              <el-option label="任意" value="OR" />
+              <el-option label="全部" value="AND" />
+            </el-select>
+            <el-select v-model="policymsps" multiple placeholder="请选择" style="margin:2px 5px;">
+              <el-option
+                v-for="item in msps"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+            <el-button size="mini" style="margin:2px 5px;" @click="makePolicy()">确定</el-button>
+            <el-button slot="reference" type="primary" icon="el-icon-edit" circle />
+          </el-popover>
+
+          <!-- <span style="color: #E74C3C;">MSP:{{ msps }}</span> -->
+          <!-- <a class="el-upload__tip" target="_blank" href="https://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html">查看文档</a> -->
         </el-form-item>
         <el-form-item :label="$t('chaincode.initArgs')">
           <el-tag v-for="tag in argTags" :key="tag" closable :disable-transitions="false" @close="handleClose(tag)">{{ tag }}</el-tag>
@@ -234,7 +251,7 @@ export default {
   components: { Pagination },
   directives: { waves },
   msp() {
-    return vm.msp
+    return vm.msps
   },
   filters: {
   },
@@ -285,7 +302,9 @@ export default {
         value: 'query',
         label: 'Query'
       }],
-      msp: '',
+      msps: [],
+      policy: '',
+      policymsps: [],
       isupgrade: false,
       isload: false,
       temp: {
@@ -336,6 +355,15 @@ export default {
     })
   },
   methods: {
+    makePolicy() {
+      var ply = this.policy
+      var msp = this.policymsps
+      if (ply === '' || msp.length === 0) {
+        this.$message.error('范围和组织不能为空')
+        return
+      }
+      this.temp.policy = ply + '(' + msp.join(',') + ')'
+    },
     handleClose(tag) {
       this.argTags.splice(this.argTags.indexOf(tag), 1)
       this.temp.args = this.argTags.join(',')
@@ -378,9 +406,12 @@ export default {
           const msp = []
           orgs.forEach(v => {
             var o = v.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
-            msp.push(o + 'MSP')
+            var org = {}
+            org.label = o
+            org.value = "'" + o + 'MSP' + '.member' + "'"
+            msp.push(org)
           })
-          this.msp = msp.join(',')
+          this.msps = msp
         }
       })
     },

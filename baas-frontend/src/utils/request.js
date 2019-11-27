@@ -7,7 +7,7 @@ import { getToken } from '@/utils/auth'
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
-  timeout: 30000 // request timeout
+  timeout: 60000 // request timeout
 })
 
 // request interceptor
@@ -56,8 +56,8 @@ service.interceptors.response.use(
       if (res.code === 2) {
         // to re-login
         MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+          confirmButtonText: '重新登录',
+          cancelButtonText: '关闭',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {

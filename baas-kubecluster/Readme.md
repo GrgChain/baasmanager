@@ -29,6 +29,7 @@
   ```
 4.关闭Swap
   ```
+  swapoff –a 
   sed -i '/ swap / s/^/#/' /etc/fstab
   ```
 5.安装docker  

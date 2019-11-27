@@ -33,8 +33,8 @@ spec:
          image: hyperledger/fabric-ca:1.4.1
          resources:
            limits:
-             cpu: "0.5"
-             memory: "512Mi"
+             cpu: "0.25"
+             memory: "256Mi"
          env:
          - name: FABRIC_CA_HOME
            value: "/etc/hyperledger/fabric-ca-server"

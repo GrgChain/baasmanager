@@ -4,6 +4,7 @@
   * 将k8s master的$HOME/.kube/config文件 替换 kubeconfig/config
   * 修改配置文件 keconfig.yaml  
 * nfs服务器和 baas-fabricengine 部署同一台centos
+  * 设置 GOPATH 环境变量
   * 创建baas根目录
     * 复制 baas-template到其下
     * 创建nfs共享目录 baas-nfsshared 
