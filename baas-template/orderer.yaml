@@ -34,7 +34,7 @@ spec:
         resources:
           limits:
             cpu: "0.25"
-            memory: "256Mi"
+            memory: "512Mi"
         env:
         - name: FABRIC_LOGGING_SPEC
           value: "INFO"
