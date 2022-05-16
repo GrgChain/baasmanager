@@ -10,13 +10,21 @@ github.com/fsnotify/fsnotify
 # github.com/gin-contrib/sessions v0.0.0-20190512062852-3cb4c4f2d615
 github.com/gin-contrib/sessions
 github.com/gin-contrib/sessions/memstore
-# github.com/gin-contrib/sse v0.0.0-20190301062529-5545eab6dad3
+# github.com/gin-contrib/sse v0.1.0
 github.com/gin-contrib/sse
-# github.com/gin-gonic/gin v1.4.0
+# github.com/gin-gonic/gin v1.7.0
 github.com/gin-gonic/gin
 github.com/gin-gonic/gin/binding
+github.com/gin-gonic/gin/internal/bytesconv
 github.com/gin-gonic/gin/internal/json
 github.com/gin-gonic/gin/render
+# github.com/go-playground/locales v0.13.0
+github.com/go-playground/locales
+github.com/go-playground/locales/currency
+# github.com/go-playground/universal-translator v0.17.0
+github.com/go-playground/universal-translator
+# github.com/go-playground/validator/v10 v10.4.1
+github.com/go-playground/validator/v10
 # github.com/go-sql-driver/mysql v1.4.0
 github.com/go-sql-driver/mysql
 # github.com/go-xorm/builder v0.3.2
@@ -25,7 +33,7 @@ github.com/go-xorm/builder
 github.com/go-xorm/core
 # github.com/go-xorm/xorm v0.7.1
 github.com/go-xorm/xorm
-# github.com/golang/protobuf v1.3.1
+# github.com/golang/protobuf v1.3.3
 github.com/golang/protobuf/proto
 # github.com/gorilla/context v1.1.1
 github.com/gorilla/context
@@ -35,29 +43,31 @@ github.com/gorilla/securecookie
 github.com/gorilla/sessions
 # github.com/hashicorp/hcl v1.0.0
 github.com/hashicorp/hcl
-github.com/hashicorp/hcl/hcl/printer
 github.com/hashicorp/hcl/hcl/ast
 github.com/hashicorp/hcl/hcl/parser
-github.com/hashicorp/hcl/hcl/token
-github.com/hashicorp/hcl/json/parser
+github.com/hashicorp/hcl/hcl/printer
 github.com/hashicorp/hcl/hcl/scanner
 github.com/hashicorp/hcl/hcl/strconv
+github.com/hashicorp/hcl/hcl/token
+github.com/hashicorp/hcl/json/parser
 github.com/hashicorp/hcl/json/scanner
 github.com/hashicorp/hcl/json/token
 # github.com/jonluo94/baasmanager/baas-core v0.0.0 => ../baas-core
 github.com/jonluo94/baasmanager/baas-core/common/gintool
-github.com/jonluo94/baasmanager/baas-core/common/xorm
-github.com/jonluo94/baasmanager/baas-core/common/log
-github.com/jonluo94/baasmanager/baas-core/common/password
-github.com/jonluo94/baasmanager/baas-core/core/model
 github.com/jonluo94/baasmanager/baas-core/common/httputil
 github.com/jonluo94/baasmanager/baas-core/common/json
 github.com/jonluo94/baasmanager/baas-core/common/jwt
-# github.com/json-iterator/go v1.1.6
+github.com/jonluo94/baasmanager/baas-core/common/log
+github.com/jonluo94/baasmanager/baas-core/common/password
+github.com/jonluo94/baasmanager/baas-core/common/xorm
+github.com/jonluo94/baasmanager/baas-core/core/model
+# github.com/json-iterator/go v1.1.9
 github.com/json-iterator/go
+# github.com/leodido/go-urn v1.2.0
+github.com/leodido/go-urn
 # github.com/magiconair/properties v1.8.0
 github.com/magiconair/properties
-# github.com/mattn/go-isatty v0.0.7
+# github.com/mattn/go-isatty v0.0.12
 github.com/mattn/go-isatty
 # github.com/mitchellh/mapstructure v1.1.2
 github.com/mitchellh/mapstructure
@@ -82,23 +92,22 @@ github.com/spf13/jwalterweatherman
 github.com/spf13/pflag
 # github.com/spf13/viper v1.4.0
 github.com/spf13/viper
-# github.com/ugorji/go v1.1.4
+# github.com/ugorji/go/codec v1.1.7
 github.com/ugorji/go/codec
-# golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
+# golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 golang.org/x/crypto/argon2
 golang.org/x/crypto/bcrypt
-golang.org/x/crypto/pbkdf2
 golang.org/x/crypto/blake2b
 golang.org/x/crypto/blowfish
-# golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223
-golang.org/x/sys/unix
+golang.org/x/crypto/pbkdf2
+golang.org/x/crypto/sha3
+# golang.org/x/sys v0.0.0-20200116001909-b77594299b42
 golang.org/x/sys/cpu
-# golang.org/x/text v0.3.0
+golang.org/x/sys/unix
+# golang.org/x/text v0.3.2
 golang.org/x/text/transform
 golang.org/x/text/unicode/norm
 # google.golang.org/appengine v1.1.0
 google.golang.org/appengine/cloudsql
-# gopkg.in/go-playground/validator.v8 v8.18.2
-gopkg.in/go-playground/validator.v8
-# gopkg.in/yaml.v2 v2.2.2
+# gopkg.in/yaml.v2 v2.2.8
 gopkg.in/yaml.v2
